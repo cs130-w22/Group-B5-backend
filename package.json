@@ -24,6 +24,7 @@
     ],
     "dependencies": {
         "@types/request-promise-native": "^1.0.16",
+        "body-parser": "^1.19.1",
         "express": "^4.17.2",
         "graphql-request": "^1.8.2",
         "jsonwebtoken": "^8.5.1",

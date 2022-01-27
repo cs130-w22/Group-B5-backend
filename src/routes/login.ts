@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var db = require('../db');
+var jwt = require('jsonwebtoken');
 
 /* POST */
 router.post('/', function(req, res, next) {
@@ -18,12 +19,17 @@ router.post('/', function(req, res, next) {
 		var dbPass = val;
 
 		// if password doesn't match or user not found
-		if(dbPass == false) {
+		if(dbPass == false || dbPass != password) {
 			res.sendStatus(401);
 			return;
 		}
 		
-		// if credentials match
+		// if credentials match, create JWT
+		var privateKey = 'xEyduBGd5cHEbR58MNphCC2h0AgzjnCFr8UTMrjCZhl387p8I6MjFAR7szTFSw1';
+		var token = jwt.sign(
+			{ "user": username }, privateKey, { header: { "alg": "HS256", "typ": "JWT" } }
+		);
+		res.cookie('jwt', token);
 		res.sendStatus(200);
 		return;
 	});

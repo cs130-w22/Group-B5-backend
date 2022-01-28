@@ -1,4 +1,8 @@
+const mongoose = require('mongoose');
 const models = require('./models/index');
+
+// connect to mongoDB database
+mongoose.connect('mongodb://127.0.0.1:27017/leetracerDB');
 
 // insert a new username/password combination into the database
 function addNewUser(name, password) {

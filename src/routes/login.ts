@@ -11,8 +11,7 @@ router.post('/', async function(req, res, next) {
 	// check for missing fields
 	if(username == undefined || password == undefined || 
 	   username.length == 0 || password.length == 0) {
-		res.sendStatus(401);
-		return;
+		return res.status(401).json({ err: true, message: "The username or password fields are missing or incorrect" });
 	}
 
 	// check if credentials match user info in db
@@ -23,13 +22,10 @@ router.post('/', async function(req, res, next) {
 		var token = jwt.sign(
 			{ "user": username }, privateKey, { header: { "alg": "HS256", "typ": "JWT" } }
 		);
-		res.cookie('jwt', token);
-		res.sendStatus(200);
-		return;
+		return res.status(200).json({ token, err: false, message: "Authentication successful" });
 	} else {
 		// else, return error
-		res.sendStatus(401);
-		return;
+		return res.status(401).json({ err: true, message: "No user found with given login info" });
 	}
 });
 

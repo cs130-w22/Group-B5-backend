@@ -9,7 +9,8 @@ router.post('/', async function(req, res, next) {
 	var password = req.body.password;
 
 	// check for missing fields
-	if(username == undefined || password == undefined) {
+	if(username == undefined || password == undefined || 
+	   username.length == 0 || password.length == 0) {
 		res.sendStatus(401);
 		return;
 	}

@@ -1,6 +1,6 @@
-var Schema = require("mongoose").Schema;
+const Schema = require("mongoose").Schema;
 
-var User = new Schema({
+const User = new Schema({
 	name: String,
 	password: String
 });

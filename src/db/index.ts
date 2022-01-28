@@ -1,4 +1,4 @@
-var models = require('./models/index');
+const models = require('./models/index');
 
 // insert a new username/password combination into the database
 function addNewUser(name, password) {

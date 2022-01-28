@@ -4,7 +4,7 @@ var db = require('../db');
 var jwt = require('jsonwebtoken');
 
 /* POST */
-router.post('/', function(req, res, next) {
+router.post('/', async function(req, res, next) {
 	var username = req.body.username;
 	var password = req.body.password;
 
@@ -15,15 +15,8 @@ router.post('/', function(req, res, next) {
 	}
 
 	// check if credentials match user info in db
-	db.getPassword(username, (val) => {
-		var dbPass = val;
-
-		// if password doesn't match or user not found
-		if(dbPass == false || dbPass != password) {
-			res.sendStatus(401);
-			return;
-		}
-		
+	let match = await db.checkPassword(username, password);
+	if(match) {
 		// if credentials match, create JWT
 		var privateKey = 'xEyduBGd5cHEbR58MNphCC2h0AgzjnCFr8UTMrjCZhl387p8I6MjFAR7szTFSw1';
 		var token = jwt.sign(
@@ -32,7 +25,11 @@ router.post('/', function(req, res, next) {
 		res.cookie('jwt', token);
 		res.sendStatus(200);
 		return;
-	});
+	} else {
+		// else, return error
+		res.sendStatus(401);
+		return;
+	}
 });
 
 module.exports = router;

@@ -6,20 +6,13 @@ function addNewUser(name, password) {
 	newUser.save();
 }
 
-// returns password of a given user, false if user does not exist
-function getPassword(name, callback) {
-	models.User.findOne({ name: name }, (err, user) => {
-		if(err) {
-			callback(false);
-		} else if(user) {
-			callback(user['password']);
-		} else {
-			callback(false);
-		}
-	});
+// returns true if name/password exist as a user in the database, false otherwise
+async function checkPassword(name, password) {
+	let match = await models.User.findOne({ name: name, password: password });
+	return match;
 }
 
 module.exports = {
 	addNewUser,
-	getPassword
+	checkPassword
 };

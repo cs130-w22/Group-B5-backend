@@ -34,3 +34,6 @@ module.exports = {
 	addNewUser,
 	checkPassword
 };
+
+// TypeScript specific export statement
+export { addNewUser, checkPassword };

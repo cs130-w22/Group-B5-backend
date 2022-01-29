@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
-const db = require('../db');
+import * as db from '../db';
 
 /* POST */
 router.post('/', async function(req, res, next) {

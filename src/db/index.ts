@@ -12,8 +12,13 @@ function addNewUser(name, password) {
 
 // returns true if name/password exist as a user in the database, false otherwise
 async function checkPassword(name, password) {
-	let match = await models.User.findOne({ name: name, password: password });
-	return match;
+	try {
+		await models.User.findOne({ name: name, password: password }).orFail();
+	}
+	catch (error) {
+		return false;
+	}
+	return true;
 }
 
 module.exports = {

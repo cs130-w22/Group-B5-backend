@@ -1,13 +1,15 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const loginRouter = require('./routes/login');
+const loginRoute = require('./routes/login');
+const signupRoute = require('./routes/signup');
 
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // routers
-app.use('/login', loginRouter);
+app.use('/login', loginRoute);
+app.use('/signup', signupRoute);
 
 // start server on port
 const PORT = 8080

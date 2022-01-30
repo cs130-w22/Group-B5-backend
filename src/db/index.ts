@@ -5,9 +5,16 @@ const models = require('./models/index');
 mongoose.connect('mongodb://127.0.0.1:27017/leetracerDB');
 
 // insert a new username/password combination into the database
-function addNewUser(name, password) {
+// return true on success, false on failure (if username already exists)
+async function addNewUser(name, password) {
 	const newUser = new models.User({ name: name, password: password });
-	newUser.save();
+	try {
+		await newUser.save();
+	}
+	catch (error) {
+		return false;
+	}
+	return true;
 }
 
 // returns true if name/password exist as a user in the database, false otherwise
@@ -25,3 +32,6 @@ module.exports = {
 	addNewUser,
 	checkPassword
 };
+
+// TypeScript specific export statement
+export { addNewUser, checkPassword };

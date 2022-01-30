@@ -7,8 +7,7 @@ router.post('/', async function(req, res, next) {
 	let password = req.body.password;
 
 	// check for missing fields
-	if(username == undefined || password == undefined ||
-	   username.length == 0 || password.length == 0) {
+	if(!username || !password || username.length == 0 || password.length == 0) {
 		return res.status(400).json({ err: true, message: "One or more fields are missing or incorrect" });
 	}
 

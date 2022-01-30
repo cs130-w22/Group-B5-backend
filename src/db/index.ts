@@ -3,7 +3,18 @@ const models = require('./models/index');
 const bcrypt = require('bcryptjs')
 
 // connect to mongoDB database
-mongoose.connect('mongodb://127.0.0.1:27017/leetracerDB').catch((e) => { console.log("Failed to connect to the db: \n", e); process.exit(); })
+mongoose.connect('mongodb+srv://LeetRacer:theEleetracer101@cluster0.7wm2w.mongodb.net/default?retryWrites=true&w=majority')
+.catch((e) => { console.log("Failed to connect to the db: \n", e); process.exit(); })
+
+const db = mongoose.connection;
+
+db.on('error', (err) => {
+	console.log('Connection error:', err);
+});
+
+db.once('open', () => {
+	console.log('Connected to database!');
+});
 
 // insert a new username/password combination into the database
 // return true on success, false on failure (if username already exists)

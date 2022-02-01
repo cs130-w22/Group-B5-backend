@@ -8,37 +8,70 @@ const credit = {
     csrfToken: "jJIGk1letDHEKmy6JyJjIWZTjJ0ejcYo5Md0y7D0gYCB7601sfpcHBPpqeEklBYc",
 };
 
+const EASY = 0;
+const MEDIUM = 1;
+const HARD = 2;
+
 const router = require('express').Router();
+
+
+// sends problem details back to the client
+async function sendProblemDetails(res, problem) {
+
+    // call Leetcode API to acquire problem details
+    await problem.detail();
+
+    // parse the fields that should be sent back
+    // return json to client
+    res.json({
+        slug: problem.slug,
+        title: problem.title,
+        content: problem.content,
+        testcase: problem.sampleTestCase,
+        codeSnippets: problem.codeSnippets
+    })
+}
 
 // get a random question
 router.get('/', async function(req, res) {
     Dotenv.config();
 
-    let leetcode = await Leetcode.build(
-        process.env.LEETCODE_USERNAME || "",
-        process.env.LEETCODE_PASSWORD || "",
-        EndPoint.US,
-    );
+    const problems = await require('../Problems');
 
-    const problems: Array<Problem> = await leetcode.getAllProblems();
+    //const problems: Array<Problem> = await leetcode.getAllProblems();
     const problem: Problem = problems[Math.floor(Math.random() * problems.length)];
     
-    await problem.detail();
-
-    const slug = problem.slug;
-    const title = problem.title;
-    const content = problem.content;
-    const testcase = problem.sampleTestCase;
-    const codeSnippets = problem.codeSnippets;
-
-    res.json({
-        slug: slug,
-        title: title,
-        content: content,
-        testcase: testcase,
-        codeSnippets: codeSnippets
-    })
-
+    sendProblemDetails(res, problem);
 })
+
+router.get('/:difficulty', async function(req, res) {
+    let code = -1;
+    switch (req.params.difficulty) {
+        case "easy":
+            code = EASY;
+            break;
+        case 'medium':
+            code = MEDIUM;
+            break;
+        case 'hard':
+            code = HARD;
+            break;
+        default:
+            res.status(400).json({
+                msg: "Please select a valid difficulty: easy, medium, hard"
+            })   
+            return;
+    }
+
+    const problems = await require('../Problems');
+
+    // filter the problems based on difficulty and whether the problem is free to access
+    const filteredProblems: Array<Problem> = problems.filter((p: Problem) => {
+        return (p.status === 0 && !p.locked);
+    });
+
+    const filteredProblem: Problem = filteredProblems[Math.floor(Math.random() * filteredProblems.length)];
+    sendProblemDetails(res, filteredProblem);
+}) 
 
 module.exports = router;

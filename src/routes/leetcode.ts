@@ -67,7 +67,7 @@ router.get('/:difficulty', async function(req, res) {
 
     // filter the problems based on difficulty and whether the problem is free to access
     const filteredProblems: Array<Problem> = problems.filter((p: Problem) => {
-        return (p.status === 0 && !p.locked);
+        return (p.difficulty === code && !p.locked);
     });
 
     // select random problem

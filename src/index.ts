@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const authRoutes = require('./routes/auth');
+const leetcodeRoutes = require('./routes/leetcode');
+
 
 const app = express();
 app.use(bodyParser.json());
@@ -8,6 +10,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // routers
 app.use('/auth', authRoutes);
+app.use('/leetcode', leetcodeRoutes);
 
 app.get("*", (res, next) => {
 	res.status(404).send("Page not found")
@@ -26,5 +29,9 @@ const PORT = 8080
 let server = app.listen(PORT, () => {
 	console.log('Server started on port ' + PORT);
 });
+
+
+// Leetcode setup
+
 
 module.exports = app;

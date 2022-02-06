@@ -2,12 +2,14 @@ const router = require('express').Router();
 const jwt = require('jsonwebtoken')
 import * as db from '../db';
 
+const privateKey = 'xEyduBGd5cHEbR58MNphCC2h0AgzjnCFr8UTMrjCZhl387p8I6MjFAR7szTFSw1';
+
 router.post('/login', async function(req, res, next) {
 	let username = req.body.username;
 	let password = req.body.password;
 
 	// check for missing fields
-	if(!username || !password || username.length == 0 || password.length == 0) {
+	if(!username || !password || username.length === 0 || password.length === 0) {
 		return res.status(401).json({ err: true, message: "The username or password fields are missing or incorrect" });
 	}
 
@@ -15,7 +17,6 @@ router.post('/login', async function(req, res, next) {
 	let match = await db.checkPassword(username, password);
 	if(match) {
 		// if credentials match, create JWT
-		let privateKey = 'xEyduBGd5cHEbR58MNphCC2h0AgzjnCFr8UTMrjCZhl387p8I6MjFAR7szTFSw1';
 		let token = jwt.sign(
 			{ "user": username }, privateKey, { header: { "alg": "HS256", "typ": "JWT" } }
 		);
@@ -33,14 +34,13 @@ router.post('/signup', async function(req, res, next) {
 	let password = req.body.password;
 
 	// check for missing fields
-	if(!username || !password || username.length == 0 || password.length == 0) {
+	if(!username || !password || username.length === 0 || password.length === 0) {
 		return res.status(400).json({ err: true, message: "One or more fields are missing or incorrect" });
 	}
 
 	// try adding new user
 	let success = await db.addNewUser(username, password);
 	if(success) {
-		let privateKey = 'xEyduBGd5cHEbR58MNphCC2h0AgzjnCFr8UTMrjCZhl387p8I6MjFAR7szTFSw1';
 		let token = jwt.sign(
 			{ "user": username }, privateKey, { header: { "alg": "HS256", "typ": "JWT" } }
 		);
@@ -49,5 +49,23 @@ router.post('/signup', async function(req, res, next) {
 		return res.status(401).json({ err: true, message: "Given username already exists in database" });
 	}
 });
+
+router.post('/verify', async (req, res) => {
+	let {token, username} = req.body;
+
+	if(!token || !username || token.length === 0 ) {
+		return res.status(400).json({ verified: false, message: "Missing JWT token or username in request body" });
+	}
+
+	try {
+		let attempt = jwt.verify(token, privateKey);
+		console.log(attempt)
+
+		return res.status(200).json({ verified: true, message: "JWT is valid for user {}" });
+	} catch(e){
+		return res.status(401).json({ verified: false, message: "Invalid JWT token." });
+	}
+
+})
 
 module.exports = router;

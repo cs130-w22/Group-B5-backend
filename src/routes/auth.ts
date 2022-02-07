@@ -59,7 +59,7 @@ router.post('/verify', async (req, res) => {
 
 	try {
 		let attempt = jwt.verify(token, privateKey);
-		console.log(attempt)
+		if(!attempt.user === username) throw new Error()
 
 		return res.status(200).json({ verified: true, message: "JWT is valid for user {}" });
 	} catch(e){

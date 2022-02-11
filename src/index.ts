@@ -41,6 +41,6 @@ server.listen(PORT, () => {
 
 // require socket files 
 app.locals.io = io;
-const privateRace = require('./socket/private/race');
+const privateRace = require('./socket/route');
 
 export { app };

@@ -1,18 +1,36 @@
 import { Socket } from 'socket.io';
+import { Race } from './race';
 
-export class PrivateLobbyTracker {
+export class Tracker {
 	// map lobby codes to the socket of waiting player
 	openLobbies = new Map();
 
-	getNewCode(socket: Socket): string {
+	activeRaces = new Set();
+
+	// start a race
+	start(code: string): boolean {
+		if(!this.openLobbies.has(code)) {
+			console.log("invalid code");
+			return false;
+		}
+
+		// create a new race, pass in room code and difficulty
+		let race: Race = new Race(code, this.openLobbies.get(code));
+		this.activeRaces.add(race);
+		this.removeLobby(code);
+		return true;
+	}
+
+	// returns a new lobby code and adds lobby to openLobbies
+	createLobby(difficulty: string): string {
 		let newCode = this.generateRandCode();
 
 		// make sure code is unique globally
 		if(this.openLobbies.has(newCode)) {
-			return this.getNewCode(socket);
+			return this.createLobby(difficulty);
 		}
 
-		this.openLobbies.set(newCode, socket);
+		this.openLobbies.set(newCode, difficulty);
 		return newCode;
 	}
 

@@ -1,7 +1,7 @@
 import { app } from '../index';
 import { Tracker } from './tracker';
 import { Socket } from 'socket.io';
-//import * as socketioJwt from 'socketio-jwt';
+import * as jwt from 'jsonwebtoken';
 
 let io = app.get('socketio');
 const privateKey = 'xEyduBGd5cHEbR58MNphCC2h0AgzjnCFr8UTMrjCZhl387p8I6MjFAR7szTFSw1';
@@ -9,13 +9,20 @@ const privateKey = 'xEyduBGd5cHEbR58MNphCC2h0AgzjnCFr8UTMrjCZhl387p8I6MjFAR7szTF
 // singleton
 let tracker = new Tracker();
 
-/*
-io.of("/race/private").on("connection", socketioJwt.authorize({
-	secret: privateKey,
-	timeout: 15000
-})).on('authenticated', (socket) => {
-*/
-io.of("/race/private").on("connection", (socket) => {
+// authenticate jwt
+io.of("/race/private").use(function(socket, next) {
+	if(socket.handshake.query && socket.handshake.query.token) {
+		jwt.verify(socket.handshake.query.token, privateKey, function(err, decoded) {
+			if(err) return next(new Error("Authentication failed"));
+			socket.decoded = decoded;
+			next();
+		});
+	}
+	else {
+		next(new Error("Authentication failed"));
+	}
+})
+.on("connection", (socket) => {
 	socket.emit("connected", "connection successful");
 
 	// create new private lobby

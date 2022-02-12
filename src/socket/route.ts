@@ -27,9 +27,13 @@ io.of("/race/private").use(function(socket, next) {
 
 	// create new private lobby
 	socket.on("create", (difficulty) => {
-		let code = tracker.createLobby(difficulty);
-		socket.join(code);
-		socket.emit("lobby", code);	
+		if(difficulty == "easy" || difficulty == "medium" || difficulty == "hard") {
+			let code = tracker.createLobby(difficulty);
+			socket.join(code);
+			socket.emit("lobby", code);	
+		} else {
+			socket.emit("error", "invalid difficulty");
+		}
 	});
 
 	// join an existing lobby
@@ -51,6 +55,8 @@ io.of("/race/private").use(function(socket, next) {
 	socket.on("start", (code) => {
 		if(tracker.start(code)) {
 			io.of("/race/private").to(code).emit("race", "race starting");
-		};
+		} else {
+			socket.emit("error", "invalid room code");
+		}
 	});
 });

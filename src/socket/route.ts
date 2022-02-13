@@ -30,7 +30,7 @@ io.of("/race/private").use(function(socket, next) {
 		if(difficulty == "easy" || difficulty == "medium" || difficulty == "hard") {
 			let code = tracker.createLobby(difficulty);
 			socket.join(code);
-			socket.emit("lobby", code);	
+			socket.emit("create", code);	
 		} else {
 			socket.emit("error", "invalid difficulty");
 		}
@@ -45,18 +45,25 @@ io.of("/race/private").use(function(socket, next) {
 			socket.emit("error", "lobby code not found");
 		} else {
 			// put this socket in a room with the lobby creator's socket
-			io.of("/race/private").to(code).emit("lobby", "new user joining lobby", socket.decoded["user"]);
+			io.of("/race/private").to(code).emit("join", "new user joining lobby", socket.decoded["user"]);
 			socket.join(code);
-			socket.emit("lobby", "successfully joined lobby");
+			socket.emit("join", "successfully joined lobby");
 		}
 	});
 
 	// start race
 	socket.on("start", (code) => {
 		if(tracker.start(code)) {
-			io.of("/race/private").to(code).emit("race", "race starting");
+			io.of("/race/private").to(code).emit("start", "race starting");
 		} else {
 			socket.emit("error", "invalid room code");
 		}
+	});
+
+	// leave lobby
+	socket.on("leave", (code) => {
+		socket.leave(code);		
+		socket.emit("leave", "successfully left lobby");
+		io.of("/race/private").to(code).emit("leave", "user left lobby", socket.decoded["user"]);
 	});
 });

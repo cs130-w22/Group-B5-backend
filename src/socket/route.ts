@@ -45,7 +45,7 @@ io.of("/race/private").use(function(socket, next) {
 			socket.emit("error", "lobby code not found");
 		} else {
 			// put this socket in a room with the lobby creator's socket
-			io.of("/race/private").to(code).emit("lobby", "new user joining lobby");
+			io.of("/race/private").to(code).emit("lobby", "new user joining lobby", socket.decoded["user"]);
 			socket.join(code);
 			socket.emit("lobby", "successfully joined lobby");
 		}

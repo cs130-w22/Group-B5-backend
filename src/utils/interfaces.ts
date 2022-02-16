@@ -36,6 +36,13 @@ enum SubmissionStatus {
     "Compile Error",
     "Wrong Answer",
     "Time Limit Exceeded",
+    "Memory Limit Exceeded",
+    "Output Limit Exceeded",
+    "Runtime Error",
+    "Internal Error",
+    "Unknown Error",
+    "Server Timeout",
+    "Submission Not Ready",
 }
 
 enum EndPoint {

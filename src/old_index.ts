@@ -88,6 +88,60 @@ async function main() {
 
         console.log(submission.status);
     })
+
+    await new Promise(r => setTimeout(r, 5000));
+
+    // compile error test case
+    fs.readFile(path.join(__dirname, "/test_cases/compile_error.cpp"), async (err: any, data: any) => {
+        if (err) throw err;
+        const s = data.toString()
+        const submission: Submission = await submit(session, csrfToken, endpoint, "two-sum", "cpp", s);
+
+        console.log(submission.status);
+        console.log(submission.compile_error);
+        console.log(submission.code_output);
+    })
+
+    await new Promise(r => setTimeout(r, 5000));
+
+    // incorrect error test case
+    fs.readFile(path.join(__dirname, "/test_cases/incorrect.py"), async (err: any, data: any) => {
+        if (err) throw err;
+        const s = data.toString()
+        const submission: Submission = await submit(session, csrfToken, endpoint, "add-two-numbers", "python3", s);
+
+        console.log(submission.status);
+        console.log(submission.input);
+        console.log(submission.expected_output);
+        console.log(submission.code_output);
+    })
+
+    await new Promise(r => setTimeout(r, 5000));
+
+    // runtime error test case
+    fs.readFile(path.join(__dirname, "/test_cases/runtime_error.py"), async (err: any, data: any) => {
+        if (err) throw err;
+        const s = data.toString()
+        const submission: Submission = await submit(session, csrfToken, endpoint, "median-of-two-sorted-arrays", "python3", s);
+
+        console.log(submission.status);
+        console.log(submission.input);
+        console.log(submission.expected_output);
+        console.log(submission.code_output);
+    })
+
+    await new Promise(r => setTimeout(r, 5000));
+
+    // tle error test case
+    fs.readFile(path.join(__dirname, "/test_cases/tle.py"), async (err: any, data: any) => {
+        if (err) throw err;
+        const s = data.toString()
+        const submission: Submission = await submit(session, csrfToken, endpoint, "find-substring-with-given-hash-value", "python3", s);
+
+        console.log(submission.status);
+        console.log(submission.input);
+        console.log(submission.expected_output);
+    })
 }
 
 main()

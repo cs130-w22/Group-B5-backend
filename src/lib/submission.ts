@@ -1,3 +1,4 @@
+import e from "cors";
 import Helper from "../utils/helper";
 import { SubmissionStatus, Uris } from "../utils/interfaces";
 
@@ -30,6 +31,7 @@ class Submission {
         const response = await Helper.HttpRequest({
             url: Submission.uris.submission.replace("$id", this.id.toString()),
         });
+
         try {
             this.status = Helper.submissionStatusMap(response.match(/parseInt\('(\d+)', 10/)[1]);
         } catch (error) {
@@ -64,7 +66,7 @@ class Submission {
 
         // execute if "compile error", "wrong answer", "runtime error"
         if (this.status === SubmissionStatus["Compile Error"] || this.status === SubmissionStatus["Wrong Answer"]) {
-            const code_output = response.match(/code_output :\s'([^']*)'/)[1];
+            this.code_output = response.match(/code_output :\s'([^']*)'/)[1];
         }
 
         return this;

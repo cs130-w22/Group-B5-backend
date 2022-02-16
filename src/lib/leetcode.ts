@@ -25,12 +25,8 @@ class Leetcode {
         };
     }
 
-    static async build2(session: string, csrfToken: string, endpoint: EndPoint): Promise<Leetcode> {
+    static build2(credit: Credit, endpoint: EndPoint): Leetcode {
         Helper.switchEndPoint(endpoint);
-        const credit = {
-            session: session,
-            csrfToken: csrfToken,
-        };
         Helper.setCredit(credit);
         return new Leetcode(credit);
     }

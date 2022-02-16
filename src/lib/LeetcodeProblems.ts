@@ -1,21 +1,30 @@
-import Leetcode from "./lib/leetcode";
-import Problem from './lib/problem';
-import { EndPoint, ProblemDifficulty, Credit} from './utils/interfaces';
+import Leetcode from "./leetcode";
+import Problem from './problem';
+import { EndPoint, ProblemDifficulty, Credit} from '../utils/interfaces';
 
 
 class LeetcodeProblems {
 
+    leetcode?: Leetcode;
     problems?: Array<Problem>;
+
 
     constructor() {
 
     }
 
-    async getAnyProblem(credit: Credit, endpoint: EndPoint) {
+    setLeetcode(leetcode: Leetcode) {
+        this.leetcode = leetcode;
+    }
+
+    async getAnyProblem() {
+
+        if (this.leetcode === undefined) {
+            return null;
+        }
 
         if (this.problems === undefined) {
-            let leetcode = Leetcode.build2(credit, endpoint);
-            this.problems = await leetcode.getAllProblems();
+            this.problems = await this.leetcode.getAllProblems();
         }
         const problem = this.problems[Math.floor(Math.random() * this.problems.length)];
         await problem.detail();
@@ -23,15 +32,18 @@ class LeetcodeProblems {
 
     }
 
-    async getProblemByDifficulty(credit: Credit, endpoint: EndPoint, difficulty: number): Promise<Problem|null> {
+    async getProblemByDifficulty(difficulty: number): Promise<Problem|null> {
         
+        if (this.leetcode === undefined) {
+            return null;
+        }
+
         if (difficulty !== ProblemDifficulty["Easy"] && difficulty !== ProblemDifficulty["Medium"] && difficulty !== ProblemDifficulty["Hard"] ) {
             return null;
         }
         
         if (this.problems === undefined) {
-            let leetcode = Leetcode.build2(credit, endpoint);
-            this.problems = await leetcode.getAllProblems();
+            this.problems = await this.leetcode.getAllProblems();
         }
         const filteredProblems: Array<Problem> = this.problems.filter((p: Problem) => {
             return (p.difficulty === difficulty && !p.locked);

@@ -2,7 +2,7 @@ import Leetcode from "./lib/leetcode";
 import Problem from './lib/problem';
 import { Credit, EndPoint, SubmissionStatus } from './utils/interfaces';
 import Submission from "./lib/submission";
-import LeetcodeProblems from "./LeetcodeProblems";
+import leetcodeProblems from "./lib/LeetcodeProblems";
 
 const path = require('path');
 const fs = require('fs')
@@ -85,14 +85,12 @@ async function submit(credit: Credit, endpoint: EndPoint, slug: string, lang: st
 }
 
 async function test_submit() {
-
     const credit = {
         session: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfYXV0aF91c2VyX2lkIjoiMzcwMTA5MyIsIl9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiMmY5ZDIyNWUwYWMyYWU2OGJkMzYwZGU2NDllNmI4NzczN2FjMGJkNiIsImlkIjozNzAxMDkzLCJlbWFpbCI6Imxhd3JlbmNlZnVAdWNsYS5lZHUiLCJ1c2VybmFtZSI6ImxmdTciLCJ1c2VyX3NsdWciOiJsZnU3IiwiYXZhdGFyIjoiaHR0cHM6Ly9hc3NldHMubGVldGNvZGUuY29tL3VzZXJzL2xmdTcvYXZhdGFyXzE2MzE4MzUxMDIucG5nIiwicmVmcmVzaGVkX2F0IjoxNjQ0ODk3NjI3LCJpcCI6IjI2MDM6ODAwMTo2OTAxOjI1ODc6OTRiNjo0ZTM5OmY0MDg6YjRjOCIsImlkZW50aXR5IjoiM2U0ODlhYWMwZTQxMWQyNDJlNTUxNmVlZWY2ZGE0ZjIiLCJzZXNzaW9uX2lkIjoxODAzNjMyOSwiX3Nlc3Npb25fZXhwaXJ5IjoxMjA5NjAwfQ.gaBnZk1yGD03lJ5D8sI6miTw5z0KSmasCpFGCvnYRAM",
         csrfToken: "yHc8JsMPpa2aGkvYszthH5FNAGWtSm5evttyJZ7IbLyUN3FK7liRmfIhd1WjDGpS",
     };
-
     const endpoint = EndPoint["US"];
-
+    
     // accepted test case
     fs.readFile(path.join(__dirname, "/test_cases/accepted.py"), async (err: any, data: any) => {
         if (err) throw err;
@@ -159,21 +157,21 @@ async function test_submit() {
 
 
 async function test_problems() {
-    const credit = {
-        session: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfYXV0aF91c2VyX2lkIjoiMzcwMTA5MyIsIl9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiMmY5ZDIyNWUwYWMyYWU2OGJkMzYwZGU2NDllNmI4NzczN2FjMGJkNiIsImlkIjozNzAxMDkzLCJlbWFpbCI6Imxhd3JlbmNlZnVAdWNsYS5lZHUiLCJ1c2VybmFtZSI6ImxmdTciLCJ1c2VyX3NsdWciOiJsZnU3IiwiYXZhdGFyIjoiaHR0cHM6Ly9hc3NldHMubGVldGNvZGUuY29tL3VzZXJzL2xmdTcvYXZhdGFyXzE2MzE4MzUxMDIucG5nIiwicmVmcmVzaGVkX2F0IjoxNjQ0ODk3NjI3LCJpcCI6IjI2MDM6ODAwMTo2OTAxOjI1ODc6OTRiNjo0ZTM5OmY0MDg6YjRjOCIsImlkZW50aXR5IjoiM2U0ODlhYWMwZTQxMWQyNDJlNTUxNmVlZWY2ZGE0ZjIiLCJzZXNzaW9uX2lkIjoxODAzNjMyOSwiX3Nlc3Npb25fZXhwaXJ5IjoxMjA5NjAwfQ.gaBnZk1yGD03lJ5D8sI6miTw5z0KSmasCpFGCvnYRAM",
-        csrfToken: "yHc8JsMPpa2aGkvYszthH5FNAGWtSm5evttyJZ7IbLyUN3FK7liRmfIhd1WjDGpS",
-    };
-    
-    const endpoint = EndPoint["US"];
-    const problem: Problem = await LeetcodeProblems.getAnyProblem(credit, endpoint);
 
-    console.log(problem.slug);
+    const problem: Problem|null = await LeetcodeProblems.getAnyProblem();
+    if (problem !== null) {
+        console.log(problem.slug);
+    }
 }
 
-
-
 //test_submit()
-
+const credit = {
+    session: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfYXV0aF91c2VyX2lkIjoiMzcwMTA5MyIsIl9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiMmY5ZDIyNWUwYWMyYWU2OGJkMzYwZGU2NDllNmI4NzczN2FjMGJkNiIsImlkIjozNzAxMDkzLCJlbWFpbCI6Imxhd3JlbmNlZnVAdWNsYS5lZHUiLCJ1c2VybmFtZSI6ImxmdTciLCJ1c2VyX3NsdWciOiJsZnU3IiwiYXZhdGFyIjoiaHR0cHM6Ly9hc3NldHMubGVldGNvZGUuY29tL3VzZXJzL2xmdTcvYXZhdGFyXzE2MzE4MzUxMDIucG5nIiwicmVmcmVzaGVkX2F0IjoxNjQ0ODk3NjI3LCJpcCI6IjI2MDM6ODAwMTo2OTAxOjI1ODc6OTRiNjo0ZTM5OmY0MDg6YjRjOCIsImlkZW50aXR5IjoiM2U0ODlhYWMwZTQxMWQyNDJlNTUxNmVlZWY2ZGE0ZjIiLCJzZXNzaW9uX2lkIjoxODAzNjMyOSwiX3Nlc3Npb25fZXhwaXJ5IjoxMjA5NjAwfQ.gaBnZk1yGD03lJ5D8sI6miTw5z0KSmasCpFGCvnYRAM",
+    csrfToken: "yHc8JsMPpa2aGkvYszthH5FNAGWtSm5evttyJZ7IbLyUN3FK7liRmfIhd1WjDGpS",
+};
+const endpoint = EndPoint["US"];
+const leetcode = Leetcode.build2(credit, endpoint);
+LeetcodeProblems.setLeetcode(leetcode);
 test_problems();
 
 

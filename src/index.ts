@@ -6,7 +6,7 @@ const leetcodeRoutes = require('./routes/leetcode');
 import * as http from 'http';
 import * as socketio from 'socket.io';
 import { EndPoint } from './utils/interfaces';
-import LeetcodeProblems from './LeetcodeProblems';
+import LeetcodeProblems from './lib/LeetcodeProblems';
 
 // connect socket.io
 const app = express();
@@ -54,7 +54,5 @@ const credit = {
 };
 
 const endpoint = EndPoint["US"];
-LeetcodeProblems.setCredit(credit);
-LeetcodeProblems.setEndpoint(endpoint);
 
 export { app };

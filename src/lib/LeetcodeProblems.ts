@@ -5,36 +5,31 @@ import { EndPoint, ProblemDifficulty, Credit} from '../utils/interfaces';
 
 class LeetcodeProblems {
 
-    leetcode?: Leetcode;
-    problems?: Array<Problem>;
+    static leetcode: Leetcode;
+    static problems: Array<Problem>;
 
-
-    constructor() {
-
+    static setLeetcode(leetcode: Leetcode): void {
+        LeetcodeProblems.leetcode = leetcode;
     }
 
-    setLeetcode(leetcode: Leetcode) {
-        this.leetcode = leetcode;
+    static async setProblems() {
+        LeetcodeProblems.problems = await LeetcodeProblems.leetcode.getAllProblems();
     }
 
-    async getAnyProblem() {
+    static async getAnyProblem(): Promise<Problem|null> {
 
-        if (this.leetcode === undefined) {
+        if (LeetcodeProblems.problems.length === 0) {
             return null;
         }
 
-        if (this.problems === undefined) {
-            this.problems = await this.leetcode.getAllProblems();
-        }
-        const problem = this.problems[Math.floor(Math.random() * this.problems.length)];
+        const problem = LeetcodeProblems.problems[Math.floor(Math.random() * LeetcodeProblems.problems.length)];
         await problem.detail();
         return problem;
-
     }
 
-    async getProblemByDifficulty(difficulty: number): Promise<Problem|null> {
+    static async getProblemByDifficulty(difficulty: number): Promise<Problem|null> {
         
-        if (this.leetcode === undefined) {
+        if (LeetcodeProblems.problems.length === 0) {
             return null;
         }
 
@@ -42,10 +37,7 @@ class LeetcodeProblems {
             return null;
         }
         
-        if (this.problems === undefined) {
-            this.problems = await this.leetcode.getAllProblems();
-        }
-        const filteredProblems: Array<Problem> = this.problems.filter((p: Problem) => {
+        const filteredProblems: Array<Problem> = LeetcodeProblems.problems.filter((p: Problem) => {
             return (p.difficulty === difficulty && !p.locked);
         });
 
@@ -55,6 +47,4 @@ class LeetcodeProblems {
     }
 }
 
-const leetcodeProblems: LeetcodeProblems = new LeetcodeProblems();
-
-export default leetcodeProblems;
+export default LeetcodeProblems;

@@ -2,7 +2,7 @@ import Leetcode from "./lib/leetcode";
 import Problem from './lib/problem';
 import { Credit, EndPoint, SubmissionStatus } from './utils/interfaces';
 import Submission from "./lib/submission";
-import leetcodeProblems from "./lib/LeetcodeProblems";
+import LeetcodeProblems from "./lib/LeetcodeProblems";
 
 const path = require('path');
 const fs = require('fs')

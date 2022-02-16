@@ -157,21 +157,22 @@ async function test_submit() {
 
 
 async function test_problems() {
-
+    //test_submit()
+    const credit = {
+    session: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfYXV0aF91c2VyX2lkIjoiMzcwMTA5MyIsIl9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiMmY5ZDIyNWUwYWMyYWU2OGJkMzYwZGU2NDllNmI4NzczN2FjMGJkNiIsImlkIjozNzAxMDkzLCJlbWFpbCI6Imxhd3JlbmNlZnVAdWNsYS5lZHUiLCJ1c2VybmFtZSI6ImxmdTciLCJ1c2VyX3NsdWciOiJsZnU3IiwiYXZhdGFyIjoiaHR0cHM6Ly9hc3NldHMubGVldGNvZGUuY29tL3VzZXJzL2xmdTcvYXZhdGFyXzE2MzE4MzUxMDIucG5nIiwicmVmcmVzaGVkX2F0IjoxNjQ0ODk3NjI3LCJpcCI6IjI2MDM6ODAwMTo2OTAxOjI1ODc6OTRiNjo0ZTM5OmY0MDg6YjRjOCIsImlkZW50aXR5IjoiM2U0ODlhYWMwZTQxMWQyNDJlNTUxNmVlZWY2ZGE0ZjIiLCJzZXNzaW9uX2lkIjoxODAzNjMyOSwiX3Nlc3Npb25fZXhwaXJ5IjoxMjA5NjAwfQ.gaBnZk1yGD03lJ5D8sI6miTw5z0KSmasCpFGCvnYRAM",
+    csrfToken: "yHc8JsMPpa2aGkvYszthH5FNAGWtSm5evttyJZ7IbLyUN3FK7liRmfIhd1WjDGpS",
+    };
+    const endpoint = EndPoint["US"];
+    const leetcode = Leetcode.build2(credit, endpoint);
+    LeetcodeProblems.setLeetcode(leetcode);
+    await LeetcodeProblems.setProblems();
     const problem: Problem|null = await LeetcodeProblems.getAnyProblem();
     if (problem !== null) {
         console.log(problem.slug);
     }
 }
 
-//test_submit()
-const credit = {
-    session: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfYXV0aF91c2VyX2lkIjoiMzcwMTA5MyIsIl9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiMmY5ZDIyNWUwYWMyYWU2OGJkMzYwZGU2NDllNmI4NzczN2FjMGJkNiIsImlkIjozNzAxMDkzLCJlbWFpbCI6Imxhd3JlbmNlZnVAdWNsYS5lZHUiLCJ1c2VybmFtZSI6ImxmdTciLCJ1c2VyX3NsdWciOiJsZnU3IiwiYXZhdGFyIjoiaHR0cHM6Ly9hc3NldHMubGVldGNvZGUuY29tL3VzZXJzL2xmdTcvYXZhdGFyXzE2MzE4MzUxMDIucG5nIiwicmVmcmVzaGVkX2F0IjoxNjQ0ODk3NjI3LCJpcCI6IjI2MDM6ODAwMTo2OTAxOjI1ODc6OTRiNjo0ZTM5OmY0MDg6YjRjOCIsImlkZW50aXR5IjoiM2U0ODlhYWMwZTQxMWQyNDJlNTUxNmVlZWY2ZGE0ZjIiLCJzZXNzaW9uX2lkIjoxODAzNjMyOSwiX3Nlc3Npb25fZXhwaXJ5IjoxMjA5NjAwfQ.gaBnZk1yGD03lJ5D8sI6miTw5z0KSmasCpFGCvnYRAM",
-    csrfToken: "yHc8JsMPpa2aGkvYszthH5FNAGWtSm5evttyJZ7IbLyUN3FK7liRmfIhd1WjDGpS",
-};
-const endpoint = EndPoint["US"];
-const leetcode = Leetcode.build2(credit, endpoint);
-LeetcodeProblems.setLeetcode(leetcode);
+
 test_problems();
 
 

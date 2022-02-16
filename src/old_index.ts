@@ -54,18 +54,27 @@ let solution = `class Solution {
 
 async function submit(session: string, csrfToken: string, endpoint: EndPoint, slug: string, lang: string, code: string): Promise<Submission> {
 
+    // configures global Helper module to take submit under a new user
     let leetcode: Leetcode;
+
+    // created a new build method for leetcode object, since old one does not work correctly
     leetcode = await Leetcode.build2(session, csrfToken, endpoint);
 
+    // creates a new problem based on the slug
     const problem: Problem = new Problem(slug);
     await problem.detail();
     
     const submission: Submission = await problem.submit(lang, code);
     
+    // leetcode may take a while to actually compute the results of a submission
+    // periodically checks leetcode to see if submission results are ready
     for (let i = 0; i < 5; i++) {
+
+        // timeout two seconds
         await new Promise(r => setTimeout(r, 2000));
         await submission.detail()
 
+        // if the submission is ready, break the loop
         if (submission.status !== SubmissionStatus["Submission Not Ready"]) {
             break;
         }

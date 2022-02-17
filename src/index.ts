@@ -6,12 +6,15 @@ const leetcodeRoutes = require('./routes/leetcode');
 const statsRoutes = require('./routes/stats');
 
 import * as http from 'http';
-import * as socketio from 'socket.io';
 
 // connect socket.io
 const app = express();
 const server = http.createServer(app);
-const io = new socketio.Server(server);
+const io = require('socket.io')(server, {
+	cors: {
+	  origin: '*',
+	}
+});
 
 app.use(cors())
 app.use(bodyParser.json());

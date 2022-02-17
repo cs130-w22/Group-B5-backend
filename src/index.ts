@@ -3,6 +3,8 @@ const cors = require("cors")
 const bodyParser = require('body-parser');
 const authRoutes = require('./routes/auth');
 const leetcodeRoutes = require('./routes/leetcode');
+const statsRoutes = require('./routes/stats');
+
 import * as http from 'http';
 import * as socketio from 'socket.io';
 
@@ -20,6 +22,7 @@ app.set('socketio', io);
 // routers
 app.use('/auth', authRoutes);
 app.use('/leetcode', leetcodeRoutes);
+app.use('/stats', statsRoutes);
 
 app.get("*", (res, next) => {
 	res.status(404).send("Page not found")

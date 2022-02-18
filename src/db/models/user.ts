@@ -1,4 +1,4 @@
-const Schema = require("mongoose").Schema;
+import { Schema } from 'mongoose';
 
 const User = new Schema({
 	name: {

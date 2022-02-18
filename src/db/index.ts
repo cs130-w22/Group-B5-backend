@@ -23,6 +23,8 @@ async function addNewUser(name, password) {
 		const hash = await bcrypt.hash(password, 8);
 		const newUser = new models.User({ name: name, password: hash });
 		await newUser.save();
+		const newUserStats = new models.UserStats({ name: name });
+		await newUserStats.save();
 	}
 	catch (error) {
 		return false;
@@ -46,10 +48,43 @@ async function checkPassword(name, password) {
 	return true;
 }
 
+// updates win-rate stats of a user based on whether or not they won
+async function updateStats(name: string, won: boolean) {
+	try {
+		let doc = await models.UserStats.findOne({ name: name });
+		if(!doc) throw new Error(`User could not be found with username: ${name}`);
+
+		doc.races = doc.races + 1;
+		if(won) {
+			doc.wins = doc.wins + 1;
+		}
+		await doc.save();
+	}
+	catch (error) {
+		return false;
+	}
+	return true;
+}
+
+// get user stats
+async function getStats(name: string) {
+	try {
+		let doc = await models.UserStats.findOne({ name: name });
+		if(!doc) throw new Error(`User could not be found with username: ${name}`);
+		
+		return [doc.wins, doc.races];
+	}
+	catch(error) {
+		return null;
+	}
+}
+
 module.exports = {
 	addNewUser,
-	checkPassword
+	checkPassword,
+	updateStats,
+	getStats
 };
 
 // TypeScript specific export statement
-export { addNewUser, checkPassword };
+export { addNewUser, checkPassword, updateStats, getStats };

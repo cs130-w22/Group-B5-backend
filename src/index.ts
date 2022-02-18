@@ -3,6 +3,8 @@ const cors = require("cors")
 const bodyParser = require('body-parser');
 const authRoutes = require('./routes/auth');
 const leetcodeRoutes = require('./routes/leetcode');
+const statsRoutes = require('./routes/stats');
+
 import * as http from 'http';
 import * as socketio from 'socket.io';
 import { EndPoint } from './utils/interfaces';
@@ -13,7 +15,11 @@ import LeetcodeProblems from './lib/LeetcodeProblems';
 // connect socket.io
 const app = express();
 const server = http.createServer(app);
-const io = new socketio.Server(server);
+const io = require('socket.io')(server, {
+	cors: {
+	  origin: '*',
+	}
+});
 
 app.use(cors())
 app.use(bodyParser.json());
@@ -24,6 +30,7 @@ app.set('socketio', io);
 // routers
 app.use('/auth', authRoutes);
 app.use('/leetcode', leetcodeRoutes);
+app.use('/stats', statsRoutes);
 
 app.get("*", (res, next) => {
 	res.status(404).send("Page not found")

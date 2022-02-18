@@ -5,25 +5,25 @@ import { ProblemDifficulty } from '../utils/interfaces';
 
 export class Race {
 	roomKey: string;
-	static problem: Problem|null;
+	problem: Problem|null;
 
 	constructor(roomKey: string, difficulty: number) {
 		this.roomKey = roomKey;
 		console.log("Race object " + roomKey + " created with difficulty: " + difficulty);
 		// TODO: fetch problem based on difficulty
 		// and set this.problem to point to it
-		Race.setProblem(difficulty);
+		this.problem = null;
 	}
 
-	static async setProblem(difficulty: number) {
+	async setProblem(difficulty: number) {
 		if (difficulty === 0) {
-			Race.problem = await LeetcodeProblems.getAnyProblem()
+			this.problem = await LeetcodeProblems.getAnyProblem()
 		}
 		else if (difficulty === ProblemDifficulty["Easy"] || difficulty === ProblemDifficulty["Medium"] || difficulty == ProblemDifficulty["Hard"]) {
-			Race.problem = await LeetcodeProblems.getProblemByDifficulty(difficulty)
+			this.problem = await LeetcodeProblems.getProblemByDifficulty(difficulty)
 		}
 		else {
-			Race.problem = null;
+			this.problem = null;
 		}
 	}
 }

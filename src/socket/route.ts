@@ -52,8 +52,8 @@ io.of("/race/private").use(function(socket, next) {
 	});
 
 	// start race
-	socket.on("start", (code) => {
-		if(tracker.start(code)) {
+	socket.on("start", async (code) => {
+		if(await tracker.start(code)) {
 			io.of("/race/private").to(code).emit("start", "race starting");
 		} else {
 			socket.emit("error", "invalid room code");

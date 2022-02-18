@@ -8,7 +8,7 @@ export class Tracker {
 	activeRaces = new Set();
 
 	// start a race
-	start(code: string): boolean {
+	async start(code: string): Promise<boolean> {
 		if(!this.openLobbies.has(code)) {
 			console.log("invalid code");
 			return false;
@@ -16,6 +16,7 @@ export class Tracker {
 
 		// create a new race, pass in room code and difficulty
 		let race: Race = new Race(code, this.openLobbies.get(code));
+		await race.setProblem(this.openLobbies.get(code));
 		this.activeRaces.add(race);
 		this.removeLobby(code);
 		return true;

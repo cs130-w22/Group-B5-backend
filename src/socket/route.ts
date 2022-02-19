@@ -14,8 +14,8 @@ let tracker = new Tracker();
 
 // authenticate jwt
 io.of("/race/private").use(function(socket, next) {
-	if(socket.handshake.query && socket.handshake.query.token) {
-		jwt.verify(socket.handshake.query.token, privateKey, function(err, decoded) {
+	if(socket.handshake.auth && socket.handshake.auth.token) {
+		jwt.verify(socket.handshake.auth.token, privateKey, function(err, decoded) {
 			if(err) return next(new Error("Authentication failed"));
 			socket.decoded = decoded;
 			next();
@@ -113,7 +113,7 @@ io.of("/race/private").use(function(socket, next) {
         		"input" : submission.input,
         		"expected_output": submission.expected_output,
 			  }
-			io.of("/race/private").to(code).emit("start", submission_details);
+			io.of("/race/private").to(code).emit("submit", submission_details);
 		} else {
 			socket.emit("error", "invalid room code");
 		}

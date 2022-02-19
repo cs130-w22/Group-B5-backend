@@ -5,8 +5,7 @@ import Problem from '../lib/problem';
 export class Tracker {
 	// map lobby codes to the socket of waiting player
 	openLobbies = new Map();
-
-	activeRaces = new Set();
+	activeRaces = new Map();
 
 	// start a race
 	async start(code: string): Promise<Problem|null> {
@@ -18,7 +17,10 @@ export class Tracker {
 		// create a new race, pass in room code and difficulty
 		let race: Race = new Race(code, this.openLobbies.get(code));
 		await race.setProblem(this.openLobbies.get(code));
-		this.activeRaces.add(race);
+
+		// associates the code with the race
+		this.activeRaces.set(code, race);
+		
 		this.removeLobby(code);
 		return race.problem;
 	}
@@ -53,5 +55,10 @@ export class Tracker {
 
 	removeLobby(code: string): void {
 		this.openLobbies.delete(code);
+	}
+
+	getRaceProblem(code: string): Problem|null {
+		const race = this.activeRaces.get(code);
+		return race.problem;
 	}
 }

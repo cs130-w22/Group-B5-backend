@@ -3,6 +3,8 @@ import { Tracker } from './tracker';
 import { Socket } from 'socket.io';
 import * as jwt from 'jsonwebtoken';
 import Problem from '../lib/problem';
+import Submission from '../lib/submission'
+import {SubmissionStatus } from '../utils/interfaces';
 
 let io = app.get('socketio');
 const privateKey = 'xEyduBGd5cHEbR58MNphCC2h0AgzjnCFr8UTMrjCZhl387p8I6MjFAR7szTFSw1';
@@ -76,6 +78,46 @@ io.of("/race/private").use(function(socket, next) {
 		} else {
 			socket.emit("error", "invalid room code");
 		}
+	});
+
+	// submit code
+	socket.on("submit", async (code, lang_slug, solution) => {
+		const problem = tracker.getRaceProblem(code);
+
+		if (problem != null) {
+			const submission: Submission = await problem.submit(lang_slug, solution);
+    
+    		// leetcode may take a while to actually compute the results of a submission
+    		// periodically checks leetcode to see if submission results are ready
+    		for (let i = 0; i < 10; i++) {
+
+        		// timeout two seconds
+        		await new Promise(r => setTimeout(r, 2000));
+        		await submission.detail()
+
+        		// if the submission is ready, break the loop
+        		if (submission.status !== SubmissionStatus["Submission Not Ready"]) {
+            		break;
+        		}
+    		}
+
+			const submission_details:JSON = <JSON><unknown>{
+		        "memory": submission.memory,
+        		"runtime": submission.runtime,
+        		"status": submission.status,
+		        "code_output": submission.code_output,
+        		"compile_error": submission.compile_error,
+        		"runtime_error": submission.runtime_error,
+        		"total_correct": submission.total_correct,
+        		"total_testcases": submission.total_testcases,
+        		"input" : submission.input,
+        		"expected_output": submission.expected_output,
+			  }
+			io.of("/race/private").to(code).emit("start", submission_details);
+		} else {
+			socket.emit("error", "invalid room code");
+		}
+		
 	});
 
 	// leave lobby

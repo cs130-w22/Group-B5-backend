@@ -26,6 +26,7 @@ enum ProblemStatus {
 }
 
 enum ProblemDifficulty {
+    "Any",
     "Easy",
     "Medium",
     "Hard",

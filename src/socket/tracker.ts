@@ -1,5 +1,6 @@
 import { Socket } from 'socket.io';
 import { Race } from './race';
+import Problem from '../lib/problem';
 
 export class Tracker {
 	// map lobby codes to the socket of waiting player
@@ -8,10 +9,10 @@ export class Tracker {
 	activeRaces = new Set();
 
 	// start a race
-	async start(code: string): Promise<boolean> {
+	async start(code: string): Promise<Problem|null> {
 		if(!this.openLobbies.has(code)) {
 			console.log("invalid code");
-			return false;
+			return null;
 		}
 
 		// create a new race, pass in room code and difficulty
@@ -19,7 +20,7 @@ export class Tracker {
 		await race.setProblem(this.openLobbies.get(code));
 		this.activeRaces.add(race);
 		this.removeLobby(code);
-		return true;
+		return race.problem;
 	}
 
 	// returns a new lobby code and adds lobby to openLobbies

@@ -2,6 +2,7 @@ import { app } from '../index';
 import { Tracker } from './tracker';
 import { Socket } from 'socket.io';
 import * as jwt from 'jsonwebtoken';
+import Problem from '../lib/problem';
 
 let io = app.get('socketio');
 const privateKey = 'xEyduBGd5cHEbR58MNphCC2h0AgzjnCFr8UTMrjCZhl387p8I6MjFAR7szTFSw1';
@@ -11,8 +12,8 @@ let tracker = new Tracker();
 
 // authenticate jwt
 io.of("/race/private").use(function(socket, next) {
-	if(socket.handshake.auth && socket.handshake.auth.token) {
-		jwt.verify(socket.handshake.auth.token, privateKey, function(err, decoded) {
+	if(socket.handshake.query && socket.handshake.query.token) {
+		jwt.verify(socket.handshake.query.token, privateKey, function(err, decoded) {
 			if(err) return next(new Error("Authentication failed"));
 			socket.decoded = decoded;
 			next();
@@ -23,11 +24,12 @@ io.of("/race/private").use(function(socket, next) {
 	}
 })
 .on("connection", (socket) => {
+
 	socket.emit("connected", "connection successful");
 
 	// create new private lobby
 	socket.on("create", (difficulty) => {
-		if(difficulty == "easy" || difficulty == "medium" || difficulty == "hard") {
+		if(difficulty == "Any" || difficulty == "Easy" || difficulty == "Medium" || difficulty == "Hard") {
 			let code = tracker.createLobby(difficulty);
 			socket.join(code);
 			socket.emit("create", code);	
@@ -53,8 +55,24 @@ io.of("/race/private").use(function(socket, next) {
 
 	// start race
 	socket.on("start", async (code) => {
-		if(await tracker.start(code)) {
-			io.of("/race/private").to(code).emit("start", "race starting");
+
+		const problem = await tracker.start(code);
+
+		if(problem != null) {
+			const problem_details:JSON = <JSON><unknown>{
+
+				//unique identifier used to submit code
+				"slug": problem.slug,
+        		"title": problem.title,
+
+				//description of problem
+        		"content": problem.content,
+
+				// array of dictionaries {"lang": xxx, "langSlug": xxx, "code": xxx}
+				"code": problem.codeSnippets
+			  }
+
+			io.of("/race/private").to(code).emit("start", problem_details);
 		} else {
 			socket.emit("error", "invalid room code");
 		}

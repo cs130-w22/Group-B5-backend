@@ -71,15 +71,13 @@ class Helper {
             case "11": return SubmissionStatus["Wrong Answer"];
             case "14": return SubmissionStatus["Time Limit Exceeded"];
             case "20": return SubmissionStatus["Compile Error"];
-            // TODO : find out what this numbers mean
-            // 12 => MLE
-            // 13 => OLE
-            // 15 => RE
-            // 16 => IE
-            // 21 => UE
-            // 30 => TO
-            // default => UE
-            default: return SubmissionStatus["Wrong Answer"];
+            case "12": return SubmissionStatus["Memory Limit Exceeded"];
+            case "13": return SubmissionStatus["Output Limit Exceeded"];
+            case "15": return SubmissionStatus["Runtime Error"];
+            case "16": return SubmissionStatus["Internal Error"];
+            case "21": return SubmissionStatus["Unknown Error"];
+            case "30": return SubmissionStatus["Server Timeout"];
+            default: return SubmissionStatus["Unknown Error"];
         }
     }
 

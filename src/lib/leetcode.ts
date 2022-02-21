@@ -25,6 +25,12 @@ class Leetcode {
         };
     }
 
+    static build2(credit: Credit, endpoint: EndPoint): Leetcode {
+        Helper.switchEndPoint(endpoint);
+        Helper.setCredit(credit);
+        return new Leetcode(credit);
+    }
+
     static async build(username: string, password: string, endpoint: EndPoint): Promise<Leetcode> {
         Helper.switchEndPoint(endpoint);
         const credit: Credit = await this.login(username, password);

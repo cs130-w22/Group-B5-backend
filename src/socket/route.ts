@@ -118,6 +118,7 @@ io.of("/race/private").use(function(socket, next) {
 			socket.emit("submission", JSON.stringify(submission_details));
 
 			// if submission is correct, update user stats
+			// and emit "win" event containing username of winner
 			if(submission.status === SubmissionStatus["Accepted"]) {
 				let players = await io.of("/race/private").in(code).fetchSockets();
 				let winner = socket.decoded["user"];
@@ -126,6 +127,8 @@ io.of("/race/private").use(function(socket, next) {
 
 				// remove race from tracker
 				tracker.removeRace(code);	
+
+				io.of("/race/private").to(code).emit("win", winner);
 			}
 
 		} else {

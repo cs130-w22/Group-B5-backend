@@ -1,8 +1,9 @@
 const router = require('express').Router();
 const jwt = require('jsonwebtoken')
 import * as db from '../db';
+require("dotenv").config();
 
-const privateKey = 'xEyduBGd5cHEbR58MNphCC2h0AgzjnCFr8UTMrjCZhl387p8I6MjFAR7szTFSw1';
+const privateKey = process.env.PRIVATE_KEY;
 
 router.post('/login', async function(req, res, next) {
 	let username = req.body.username;

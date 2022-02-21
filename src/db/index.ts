@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 const models = require('./models/index');
 const bcrypt = require('bcryptjs')
+require("dotenv").config();
 
 // connect to mongoDB database
-mongoose.connect('mongodb+srv://LeetRacer:theEleetracer101@cluster0.7wm2w.mongodb.net/default?retryWrites=true&w=majority')
+mongoose.connect(process.env.MONGODB_URI)
 .catch((e) => { console.log("Failed to connect to the db: \n", e); process.exit(); })
 
 const db = mongoose.connection;

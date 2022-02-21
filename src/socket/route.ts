@@ -5,9 +5,10 @@ import * as jwt from 'jsonwebtoken';
 import Problem from '../lib/problem';
 import Submission from '../lib/submission'
 import {SubmissionStatus } from '../utils/interfaces';
+require("dotenv").config();
 
 let io = app.get('socketio');
-const privateKey = 'xEyduBGd5cHEbR58MNphCC2h0AgzjnCFr8UTMrjCZhl387p8I6MjFAR7szTFSw1';
+const privateKey = process.env.PRIVATE_KEY;
 
 // singleton
 let tracker = new Tracker();

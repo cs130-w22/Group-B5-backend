@@ -2,6 +2,7 @@ import { Socket } from 'socket.io';
 import Problem from '../lib/problem';
 import LeetcodeProblems from '../lib/LeetcodeProblems';
 import { ProblemDifficulty } from '../utils/interfaces';
+import { updateStats } from '../db';
 
 export class Race {
 	roomKey: string;
@@ -25,5 +26,17 @@ export class Race {
 		else {
 			this.problem = null;
 		}
+	}
+
+	async end(winner: string, players) {
+		players.forEach (async function(player) {
+			let user: string = player.decoded["user"];
+			let won: boolean = (user == winner);
+
+			let ret = await updateStats(user, won);
+			if(!ret) {
+				console.log("Error updating stats for user: " + user);
+			}
+		});
 	}
 }

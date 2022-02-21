@@ -31,10 +31,7 @@ export class Race {
 	async end(winner: string, players) {
 		players.forEach (async function(player) {
 			let user: string = player.decoded["user"];
-			let won: boolean = false;
-			if(user == winner) {
-				won = true;
-			} 
+			let won: boolean = (user == winner);
 
 			let ret = await updateStats(user, won);
 			if(!ret) {

@@ -14,8 +14,8 @@ let tracker = new Tracker();
 
 // authenticate jwt
 io.of("/race/private").use(function(socket, next) {
-	if(socket.handshake.auth && socket.handshake.auth.token) {
-		jwt.verify(socket.handshake.auth.token, privateKey, function(err, decoded) {
+	if(socket.handshake.query && socket.handshake.query.token) {
+		jwt.verify(socket.handshake.query.token, privateKey, function(err, decoded) {
 			if(err) return next(new Error("Authentication failed"));
 			socket.decoded = decoded;
 			next();
@@ -61,20 +61,15 @@ io.of("/race/private").use(function(socket, next) {
 		const problem = await tracker.start(code);
 
 		if(problem != null) {
-			const problem_details:JSON = <JSON><unknown>{
 
-				//unique identifier used to submit code
-				"slug": problem.slug,
-        		"title": problem.title,
+			const problem_details: any = {};
+			problem_details.slug = problem.slug;
+        	problem_details.title = problem.title,
+			problem_details.content = problem.content,
+			// array of dictionaries {"lang": xxx, "langSlug": xxx, "code": xxx}
+			problem_details.code = problem.codeSnippets
 
-				//description of problem
-        		"content": problem.content,
-
-				// array of dictionaries {"lang": xxx, "langSlug": xxx, "code": xxx}
-				"code": problem.codeSnippets
-			  }
-
-			io.of("/race/private").to(code).emit("start", problem_details);
+			io.of("/race/private").to(code).emit("start", JSON.stringify(problem_details));
 		} else {
 			socket.emit("error", "invalid room code");
 		}
@@ -101,19 +96,26 @@ io.of("/race/private").use(function(socket, next) {
         		}
     		}
 
-			const submission_details:JSON = <JSON><unknown>{
-		        "memory": submission.memory,
-        		"runtime": submission.runtime,
-        		"status": submission.status,
-		        "code_output": submission.code_output,
-        		"compile_error": submission.compile_error,
-        		"runtime_error": submission.runtime_error,
-        		"total_correct": submission.total_correct,
-        		"total_testcases": submission.total_testcases,
-        		"input" : submission.input,
-        		"expected_output": submission.expected_output,
-			  }
-			io.of("/race/private").to(code).emit("submit", submission_details);
+			const notification: any = {};
+			notification.status = submission.status;
+			notification.total_correct = submission.total_correct;
+			notification.total_testcases = submission.total_testcases;
+			io.of("/race/private").to(code).emit("notification", JSON.stringify(notification));
+
+			const submission_details: any = {}
+		    submission_details.memory = submission.memory;
+        	submission_details.runtime = submission.runtime;
+        	submission_details.status = submission.status;
+		    submission_details.code_output = submission.code_output;
+        	submission_details.compile_error = submission.compile_error;
+        	submission_details.runtime_error = submission.runtime_error;
+        	submission_details.total_correct = submission.total_correct;
+        	submission_details.total_testcases = submission.total_testcases;
+        	submission_details.input = submission.input;
+        	submission_details.expected_output = submission.expected_output;
+
+			socket.emit("submission", JSON.stringify(submission_details));
+
 		} else {
 			socket.emit("error", "invalid room code");
 		}

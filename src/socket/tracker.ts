@@ -57,6 +57,14 @@ export class Tracker {
 		this.openLobbies.delete(code);
 	}
 
+	findRace(code: string): Race {
+		return this.activeRaces.get(code);
+	}
+
+	removeRace(code: string): void {
+		this.activeRaces.delete(code);
+	}
+
 	getRaceProblem(code: string): Problem|null {
 		const race = this.activeRaces.get(code);
 		return race.problem;

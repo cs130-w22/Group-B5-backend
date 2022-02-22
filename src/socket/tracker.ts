@@ -6,6 +6,27 @@ export class Tracker {
 	// map lobby codes to the socket of waiting player
 	openLobbies = new Map();
 	activeRaces = new Map();
+	rooms = new Set();
+
+	// stores room key of players searching for opponent
+	searching = new Map();
+
+	search(difficulty: string) {
+		if(this.searching.has(difficulty)) {
+			let code = this.searching.get(difficulty);
+			this.searching.delete(difficulty);
+			return [code, true];
+		} else {
+			let newCode = this.generateRandCode();
+			if(this.rooms.has(newCode)) {
+				this.search(difficulty);
+			}
+			this.searching.set(difficulty, newCode);
+			this.openLobbies.set(newCode, difficulty);
+			this.rooms.add(newCode);
+			return [newCode, false];
+		}
+	}
 
 	// start a race
 	async start(code: string): Promise<Problem|null> {
@@ -30,7 +51,7 @@ export class Tracker {
 		let newCode = this.generateRandCode();
 
 		// make sure code is unique globally
-		if(this.openLobbies.has(newCode)) {
+		if(this.rooms.has(newCode)) {
 			return this.createLobby(difficulty);
 		}
 
@@ -63,10 +84,21 @@ export class Tracker {
 
 	removeRace(code: string): void {
 		this.activeRaces.delete(code);
+		this.rooms.delete(code);
 	}
 
 	getRaceProblem(code: string): Problem|null {
 		const race = this.activeRaces.get(code);
 		return race.problem;
+	}
+
+	cancelSearch(code: string): void {
+		for(const [key, value] of this.searching.entries()) {
+			if(code == value) {
+				this.searching.delete(key);
+			}
+		}
+	
+		this.openLobbies.delete(code);
 	}
 }

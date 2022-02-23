@@ -32,7 +32,8 @@ io.use(function(socket, next) {
 
 	// search for random opponent
 	socket.on("search", async (difficulty) => {
-		if(difficulty != "Any" && difficulty != "Easy" && difficulty != "Medium" && difficulty != "Hard") {
+		console.log(`${socket.decoded.user} is searching for an opponent with '${difficulty}' difficulty`)
+		if(difficulty !== "Any" && difficulty !== "Easy" && difficulty !== "Medium" && difficulty !== "Hard") {
 			socket.emit("error", "invalid difficulty");
 			return;
 		}
@@ -42,8 +43,10 @@ io.use(function(socket, next) {
 		let found = res[1]
 		socket.join(code);
 		if(!found) {
+			console.log("no opponent found")
 			socket.emit("searching", code);
 		} else {
+			console.log("opponent found")
 			io.to(code).emit("match", code);
 			await startRace(code, socket);
 		}
@@ -57,7 +60,7 @@ io.use(function(socket, next) {
 
 	// create new private lobby
 	socket.on("create", (difficulty) => {
-		if(difficulty == "Any" || difficulty == "Easy" || difficulty == "Medium" || difficulty == "Hard") {
+		if(difficulty === "Any" || difficulty === "Easy" || difficulty === "Medium" || difficulty === "Hard") {
 			let code = tracker.createLobby(difficulty);
 			socket.join(code);
 			socket.emit("create", code);	

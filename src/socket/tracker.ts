@@ -19,7 +19,7 @@ export class Tracker {
 		} else {
 			let newCode = this.generateRandCode();
 			if(this.rooms.has(newCode)) {
-				this.search(difficulty);
+				return this.search(difficulty);
 			}
 			this.searching.set(difficulty, newCode);
 			this.openLobbies.set(newCode, difficulty);

@@ -14,7 +14,7 @@ const privateKey = process.env.PRIVATE_KEY;
 let tracker = new Tracker();
 
 // authenticate jwt
-io.of("/race/private").use(function(socket, next) {
+io.use(function(socket, next) {
 	if(socket.handshake.auth && socket.handshake.auth.token) {
 		jwt.verify(socket.handshake.auth.token, privateKey, function(err, decoded) {
 			if(err) return next(new Error("Authentication failed"));
@@ -30,9 +30,38 @@ io.of("/race/private").use(function(socket, next) {
 
 	socket.emit("connected", "connection successful");
 
+	// search for random opponent
+	socket.on("search", async (difficulty) => {
+		console.log(`${socket.decoded.user} is searching for an opponent with '${difficulty}' difficulty`)
+		if(difficulty !== "Any" && difficulty !== "Easy" && difficulty !== "Medium" && difficulty !== "Hard") {
+			socket.emit("error", "invalid difficulty");
+			return;
+		}
+
+		let res = tracker.search(difficulty);
+		let code = res[0];
+		let found = res[1]
+		socket.join(code);
+		if(!found) {
+			console.log("no opponent found")
+			socket.emit("searching", code);
+		} else {
+			console.log("opponent found")
+			io.to(code).emit("match", code);
+			await startRace(code, socket);
+		}
+	});
+
+	// cancel searching for opponent
+	socket.on("cancel", (code) => {
+		console.log(`${socket.decoded.user} has canceled their search`)
+		tracker.cancelSearch(code);
+		socket.emit("cancelled");
+	});
+
 	// create new private lobby
 	socket.on("create", (difficulty) => {
-		if(difficulty == "Any" || difficulty == "Easy" || difficulty == "Medium" || difficulty == "Hard") {
+		if(difficulty === "Any" || difficulty === "Easy" || difficulty === "Medium" || difficulty === "Hard") {
 			let code = tracker.createLobby(difficulty);
 			socket.join(code);
 			socket.emit("create", code);	
@@ -50,7 +79,7 @@ io.of("/race/private").use(function(socket, next) {
 			socket.emit("error", "lobby code not found");
 		} else {
 			// put this socket in a room with the lobby creator's socket
-			io.of("/race/private").to(code).emit("join", "new user joining lobby", socket.decoded["user"]);
+			io.to(code).emit("join", "new user joining lobby", socket.decoded["user"]);
 			socket.join(code);
 			socket.emit("join", "successfully joined lobby");
 		}
@@ -58,22 +87,7 @@ io.of("/race/private").use(function(socket, next) {
 
 	// start race
 	socket.on("start", async (code) => {
-
-		const problem = await tracker.start(code);
-
-		if(problem != null) {
-
-			const problem_details: any = {};
-			problem_details.slug = problem.slug;
-			problem_details.title = problem.title,
-				problem_details.content = problem.content,
-				// array of dictionaries {"lang": xxx, "langSlug": xxx, "code": xxx}
-				problem_details.code = problem.codeSnippets
-
-			io.of("/race/private").to(code).emit("start", JSON.stringify(problem_details));
-		} else {
-			socket.emit("error", "invalid room code");
-		}
+		await startRace(code, socket);
 	});
 
 	// submit code
@@ -101,7 +115,7 @@ io.of("/race/private").use(function(socket, next) {
 			notification.status = submission.status;
 			notification.total_correct = submission.total_correct;
 			notification.total_testcases = submission.total_testcases;
-			io.of("/race/private").to(code).emit("notification", JSON.stringify(notification));
+			io.to(code).emit("notification", JSON.stringify(notification));
 
 			const submission_details: any = {}
 			submission_details.memory = submission.memory;
@@ -120,7 +134,7 @@ io.of("/race/private").use(function(socket, next) {
 			// if submission is correct, update user stats
 			// and emit "win" event containing username of winner
 			if(submission.status === SubmissionStatus["Accepted"]) {
-				let players = await io.of("/race/private").in(code).fetchSockets();
+				let players = await io.in(code).fetchSockets();
 				let winner = socket.decoded["user"];
 				let race = tracker.findRace(code);
 				await race.end(winner, players);
@@ -128,7 +142,7 @@ io.of("/race/private").use(function(socket, next) {
 				// remove race from tracker
 				tracker.removeRace(code);	
 
-				io.of("/race/private").to(code).emit("win", winner);
+				io.to(code).emit("win", winner);
 			}
 
 		} else {
@@ -140,6 +154,24 @@ io.of("/race/private").use(function(socket, next) {
 	socket.on("leave", (code) => {
 		socket.leave(code);		
 		socket.emit("leave", "successfully left lobby");
-		io.of("/race/private").to(code).emit("leave", "user left lobby", socket.decoded["user"]);
+		io.to(code).emit("leave", "user left lobby", socket.decoded["user"]);
 	});
 });
+
+async function startRace(code: string, socket: Socket) {
+	const problem = await tracker.start(code);
+
+	if(problem != null) {
+
+		const problem_details: any = {};
+		problem_details.slug = problem.slug;
+		problem_details.title = problem.title,
+			problem_details.content = problem.content,
+			// array of dictionaries {"lang": xxx, "langSlug": xxx, "code": xxx}
+			problem_details.code = problem.codeSnippets
+
+		io.to(code).emit("start", JSON.stringify(problem_details));
+	} else {
+		socket.emit("error", "invalid room code");
+	}
+}

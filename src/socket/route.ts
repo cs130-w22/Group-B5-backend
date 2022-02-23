@@ -54,6 +54,7 @@ io.use(function(socket, next) {
 
 	// cancel searching for opponent
 	socket.on("cancel", (code) => {
+		console.log(`${socket.decoded.user} has canceled their search`)
 		tracker.cancelSearch(code);
 		socket.emit("cancelled");
 	});

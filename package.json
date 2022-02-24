@@ -1,7 +1,7 @@
 {
-    "name": "leetcode-api-ts",
-    "version": "1.1.1",
-    "description": "Leetcode api with typescript and full async",
+    "name": "leetracer-backend",
+    "version": "1.0",
+    "description": "Leetracer backend server",
     "keywords": [
         "typescript",
         "leetcode",
@@ -10,9 +10,7 @@
         "promise"
     ],
     "author": {
-        "name": "VEct0r",
-        "email": "twskec@gmail.com",
-        "url": "https://vect0r.me"
+        "name": "UCLA CS130 Winter 22 Group B5"
     },
     "license": "MIT",
     "main": "dist/index.js",

@@ -32,7 +32,7 @@ app.set('socketio', io);
 app.use('/auth', authRoutes);
 app.use('/stats', statsRoutes);
 
-app.get("*", (res, next) => {
+app.get("*", (req, res, next) => {
 	res.status(404).send("Page not found")
 })
 	
@@ -45,7 +45,7 @@ app.use((error, req, res, next) => {
 })
 
 // start server on port
-const PORT = 8080
+const PORT = process.env.PORT || 8080
 server.listen(PORT, () => {
 	console.log('Server started on port ' + PORT);
 });

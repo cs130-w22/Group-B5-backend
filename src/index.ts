@@ -32,7 +32,7 @@ app.set('socketio', io);
 app.use('/auth', authRoutes);
 app.use('/stats', statsRoutes);
 
-app.get("*", (res, next) => {
+app.get("*", (req, res, next) => {
 	res.status(404).send("Page not found")
 })
 	

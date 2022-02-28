@@ -33,7 +33,7 @@ router.get('/race/:id', async function(req, res, next) {
 	// check if credentials match race info in db
 	const race = await db.getRace(id);
 	if(!race) {
-		return res.status(401).json({ err: true, message: "No user found with given login info" });
+		return res.status(401).json({ err: true, message: "No race found with given id" });
 	}
 
 	return res.status(200).json({ 

@@ -70,7 +70,7 @@ async function getStats(name: string) {
 
 async function getRace(id) {
 	try {
-		const race = await models.race.findById(id);
+		const race = await models.Race.findById(id);
 		if(!race) throw new Error(`Race could not be found with id: ${id}`);
 
 		return race;

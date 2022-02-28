@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const models = require('./models/index');
 const bcrypt = require('bcryptjs')
+import { Race } from '../socket/race';
+import { Socket } from 'socket.io';
 require("dotenv").config();
 
 // connect to mongoDB database
@@ -24,8 +26,6 @@ async function addNewUser(name, password) {
 		const hash = await bcrypt.hash(password, 8);
 		const newUser = new models.User({ name: name, password: hash });
 		await newUser.save();
-		const newUserStats = new models.UserStats({ name: name });
-		await newUserStats.save();
 	}
 	catch (error) {
 		return false;
@@ -49,43 +49,73 @@ async function checkPassword(name, password) {
 	return true;
 }
 
-// updates win-rate stats of a user based on whether or not they won
-async function updateStats(name: string, won: boolean) {
-	try {
-		let doc = await models.UserStats.findOne({ name: name });
-		if(!doc) throw new Error(`User could not be found with username: ${name}`);
-
-		doc.races = doc.races + 1;
-		if(won) {
-			doc.wins = doc.wins + 1;
-		}
-		await doc.save();
-	}
-	catch (error) {
-		return false;
-	}
-	return true;
-}
-
 // get user stats
 async function getStats(name: string) {
 	try {
-		let doc = await models.UserStats.findOne({ name: name });
-		if(!doc) throw new Error(`User could not be found with username: ${name}`);
+		const user = await models.User.findOne({ name: name });
+		if(!user) throw new Error(`User could not be found with username: ${name}`);
+
+		const allRaces = await models.UserHistory.find({ name: name });
+		const numRaces = allRaces.length;
+
+		const wins = await models.UserHistory.find({ name: name, won: true });
+		const numWins = wins.length;
 		
-		return [doc.wins, doc.races];
+		return [numWins, numRaces, allRaces];
 	}
 	catch(error) {
 		return null;
 	}
 }
 
+async function getRace(id) {
+	try {
+		const race = await models.race.findById(id);
+		if(!race) throw new Error(`Race could not be found with id: ${id}`);
+
+		return race;
+	}
+	catch(error) {
+		return null;
+	}
+}
+
+// update race history when a race ends
+async function recordRace(race: Race, players) {
+	const title = race.problemTitle;
+	const date = race.startTime;
+	const difficulty = race.difficulty;
+	const numParticipants = players.length;
+	const timeToSolve = (race.endTime!.getTime() - race.startTime.getTime()) / 1000;
+	const winner = race.winner;
+	const newRace = new models.Race({
+		title: title, 
+		date: date, 
+		difficulty: difficulty,
+		numParticipants: numParticipants,
+		timeToSolve: timeToSolve,
+		winner: winner
+	}); 
+
+	const doc = await newRace.save();
+	const id = doc._id;
+
+	players.forEach (async function(player) {
+		let user: string = player.decoded["user"];
+		let won: boolean = (user == winner);
+
+		const newUserHistory = new models.UserHistory({name: user, race: id, won: won});
+		await newUserHistory.save();
+	});
+}
+
 module.exports = {
 	addNewUser,
 	checkPassword,
-	updateStats,
-	getStats
+	getRace,
+	getStats,
+	recordRace
 };
 
 // TypeScript specific export statement
-export { addNewUser, checkPassword, updateStats, getStats };
+export { addNewUser, checkPassword, getRace, getStats, recordRace };

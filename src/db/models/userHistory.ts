@@ -9,6 +9,10 @@ const UserHistory = new Schema({
 	race: {
 		type: Schema.Types.ObjectId,
 		required: true
+	},
+	won: {
+		type: Boolean,
+		required: true
 	}
 });
 

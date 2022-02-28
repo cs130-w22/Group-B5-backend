@@ -61,7 +61,14 @@ async function getStats(name: string) {
 		const wins = await models.UserHistory.find({ name: name, won: true });
 		const numWins = wins.length;
 		
-		return [numWins, numRaces, allRaces];
+		// get info for each race
+		let raceData: object[] = [];
+		for(let i=0; i<numRaces; i++) {
+			const id = allRaces[i].race;
+			const r = await models.Race.findById(id);
+			raceData.push(r);
+		}
+		return [numWins, numRaces, raceData];
 	}
 	catch(error) {
 		return null;

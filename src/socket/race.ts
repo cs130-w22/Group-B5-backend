@@ -2,41 +2,44 @@ import { Socket } from 'socket.io';
 import Problem from '../lib/problem';
 import LeetcodeProblems from '../lib/LeetcodeProblems';
 import { ProblemDifficulty } from '../utils/interfaces';
-import { updateStats } from '../db';
+import { recordRace } from '../db';
 
 export class Race {
 	roomKey: string;
 	problem: Problem|null;
+	startTime: Date;
+	endTime?: Date;
+	difficulty: string;
+	winner?: string;
+	problemTitle;
 
 	constructor(roomKey: string, difficulty: string) {
 		this.roomKey = roomKey;
-		console.log("Race object " + roomKey + " created with difficulty: " + difficulty);
-		// TODO: fetch problem based on difficulty
-		// and set this.problem to point to it
 		this.problem = null;
+		this.problemTitle = null;
+		this.startTime = new Date();
+		this.difficulty = difficulty;
+		console.log("Race object " + roomKey + " created with difficulty: " + difficulty);
 	}
 
 	async setProblem(difficulty: string) {
 		if (difficulty === "Any") {
 			this.problem = await LeetcodeProblems.getAnyProblem()
+			this.problemTitle = this.problem!.title;
 		}
 		else if (difficulty === "Easy" || difficulty === "Medium" || difficulty == "Hard") {
 			this.problem = await LeetcodeProblems.getProblemByDifficulty(ProblemDifficulty[difficulty]);
+			this.problemTitle = this.problem!.title;
 		}
 		else {
 			this.problem = null;
+			this.problemTitle = null;
 		}
 	}
 
 	async end(winner: string, players) {
-		players.forEach (async function(player) {
-			let user: string = player.decoded["user"];
-			let won: boolean = (user == winner);
-
-			let ret = await updateStats(user, won);
-			if(!ret) {
-				console.log("Error updating stats for user: " + user);
-			}
-		});
+		this.winner = winner;
+		this.endTime = new Date();
+		recordRace(this, players);
 	}
 }

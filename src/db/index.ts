@@ -116,13 +116,52 @@ async function recordRace(race: Race, players) {
 	});
 }
 
+interface UserTestCase {
+	"input": any,
+	"output": any,
+}
+
+async function addUserProblem(name: String, description: String, testcases: Array<UserTestCase>) {
+
+	try {
+		const newUserProblem = new models.UserProblem({ name: name, description: description, testcases: testcases });
+		await newUserProblem.save();
+	}
+	catch (error) {
+		return false;
+	}
+	return true;
+}
+
+async function getUserProblem(name: String) {
+	try {
+		var userProblem;
+		//gets a random question or gets a problem by name
+		if (name === "ANY") {
+			var n = db.myCollection.count();
+			var r = Math.floor(Math.random() * n);
+			userProblem = models.UserProblem.find().limit(1).skip(r);
+		} else {
+			userProblem = await models.UserProblem.findOne({"name": name})
+		}
+		if(!userProblem) throw new Error(`Problem could not be found with name: ${name}`);
+		console.log(userProblem)
+		return [userProblem.name, userProblem.description, userProblem.testcases];
+	}
+	catch(error) {
+		return null;
+	}
+}
+
 module.exports = {
 	addNewUser,
 	checkPassword,
 	getRace,
 	getStats,
-	recordRace
+	recordRace,
+	addUserProblem,
+	getUserProblem,
 };
 
 // TypeScript specific export statement
-export { addNewUser, checkPassword, getRace, getStats, recordRace };
+export { addNewUser, checkPassword, getRace, getStats, recordRace, addUserProblem, getUserProblem};

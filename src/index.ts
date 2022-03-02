@@ -3,6 +3,7 @@ const cors = require("cors")
 const bodyParser = require('body-parser');
 const authRoutes = require('./routes/auth');
 const statsRoutes = require('./routes/stats');
+const userQuestionRoutes = require('./routes/userQuestion');
 
 import * as http from 'http';
 import * as socketio from 'socket.io';
@@ -31,6 +32,7 @@ app.set('socketio', io);
 // routers
 app.use('/auth', authRoutes);
 app.use('/stats', statsRoutes);
+app.use('/userQuestions', userQuestionRoutes);
 
 app.get("*", (req, res, next) => {
 	res.status(404).send("Page not found")

@@ -38,7 +38,7 @@ router.get('/race/:id', async function(req, res, next) {
 
 	return res.status(200).json({ 
 		title: race.title,
-	       	date: race.date,
+		date: race.date,
 		difficulty: race.difficulty,
 		numParticipants: race.numParticipants,
 		timeToSolve: race.timeToSolve,

@@ -107,9 +107,9 @@ async function recordRace(race: Race, players) {
 	const doc = await newRace.save();
 	const id = doc._id;
 
-	players.forEach (async function(player) {
+	players.forEach(async function(player) {
 		let user: string = player.decoded["user"];
-		let won: boolean = (user == winner);
+		let won: boolean = (user === winner);
 
 		const newUserHistory = new models.UserHistory({name: user, race: id, won: won});
 		await newUserHistory.save();

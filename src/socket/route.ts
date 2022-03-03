@@ -72,7 +72,7 @@ io.use(function(socket, next) {
 	});
 
 	// join an existing lobby
-	socket.on("join", (code) => {
+	socket.on("join", async (code) => {
 		console.log(`${socket.decoded.user} just joined lobby with code ${code}`)
 		let opponent = tracker.findLobby(code);
 
@@ -81,9 +81,27 @@ io.use(function(socket, next) {
 			socket.emit("error", "lobby code not found");
 		} else {
 			// put this socket in a room with the lobby creator's socket
-			io.to(code).emit("join", "new user joining lobby", socket.decoded["user"]);
 			socket.join(code);
-			socket.emit("join", "successfully joined lobby");
+			let sockets = await io.in(code).fetchSockets();
+			let players = sockets.map(s => s.decoded.user)
+
+			console.log(`Players in ${code}: ${players}`)
+			io.to(code).emit("join", `new user ${socket.decoded.user} joining lobby`, players);;
+		}
+	});
+
+	// leave lobby
+	socket.on("leave", async (code) => {
+		console.log(`${socket.decoded.user} just left lobby ${code}`)
+		socket.leave(code);		
+		socket.emit("leave", "successfully left lobby");
+
+		let sockets = await io.in(code).fetchSockets();
+		let players = sockets.map(s => s.decoded.user)
+		io.to(code).emit("leave", `User ${socket.decoded.user} left lobby`, players);
+
+		if(players.length === 0){
+			tracker.removeRace(code)
 		}
 	});
 
@@ -157,14 +175,6 @@ io.use(function(socket, next) {
 		} else {
 			socket.emit("error", "invalid room code");
 		}
-	});
-
-	// leave lobby
-	socket.on("leave", (code) => {
-		console.log(`${socket.decoded.user} just left lobby ${code}`)
-		socket.leave(code);		
-		socket.emit("leave", "successfully left lobby");
-		io.to(code).emit("leave", "user left lobby", socket.decoded["user"]);
 	});
 });
 

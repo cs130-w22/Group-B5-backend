@@ -70,3 +70,9 @@ router.post('/verify', async (req, res) => {
 })
 
 module.exports = router;
+/**
+ * Provides 3 API routes for user authorization: POST /auth/signup,
+ * POST /auth/login, and POST /auth/verify. Signup handles registration of new
+ * users, login handles logging in of existing users, and verify handles JWT verification.
+ */
+export { router };

@@ -47,3 +47,11 @@ router.get('/race/:id', async function(req, res, next) {
 });
 
 module.exports = router;
+/**
+ * Provides 2 API routes to fetch stats. GET /stats/user/:username returns the number
+ * of total wins of a user, the total number of races this user has finished, as well as
+ * an array containing information on each race the user participated in.
+ * GET /stats/race/:id takes in a race ID and provides the following information for the given
+ * race: title, date, difficulty, number of participants, time to solve, and winner.
+ */
+export { router };

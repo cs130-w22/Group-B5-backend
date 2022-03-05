@@ -38,7 +38,7 @@ io.use(function(socket, next) {
 			return;
 		}
 
-		let res = tracker.search(difficulty);
+		let res = await tracker.search(difficulty);
 		let code = res[0];
 		let found = res[1]
 		socket.join(code);
@@ -48,7 +48,20 @@ io.use(function(socket, next) {
 		} else {
 			console.log("opponent found")
 			io.to(code).emit("match", code);
-			await startRace(code, socket);
+			
+			let prob = tracker.getRaceProblem(code)
+			if(prob){
+				const problem_details: any = {};
+				problem_details.slug = prob.slug;
+				problem_details.title = prob.title,
+				problem_details.content = prob.content,
+				// array of dictionaries {"lang": xxx, "langSlug": xxx, "code": xxx}
+				problem_details.code = prob.codeSnippets
+
+				io.to(code).emit("start", JSON.stringify(problem_details), code);
+			} else {
+				socket.emit("error", "An error occurred. Could not start the random-matchmaking race. Please try again");
+			}
 		}
 	});
 
@@ -113,11 +126,11 @@ io.use(function(socket, next) {
 
 	// submit code
 	socket.on("submit", async (code, lang_slug, solution) => {
-		console.log(`${socket.decoded.user} just submitted their code`)
+		console.log(`${socket.decoded.user} just submitted their code in ${code}`)
 		console.log(`Submitted code: ${solution}`)
 		const problem = tracker.getRaceProblem(code);
 
-		if (problem != null) {
+		if (problem) {
 			const submission: Submission = await problem.submit(lang_slug, solution);
 
 			// leetcode may take a while to actually compute the results of a submission
@@ -159,7 +172,7 @@ io.use(function(socket, next) {
 			// if submission is correct, update user stats
 			// and emit "win" event containing username of winner
 			if(submission.status === SubmissionStatus["Accepted"]) {
-				console.log(`${socket.decoder.user} just passed all testcases and won race ${code}`)
+				console.log(`${socket.decoded.user} just passed all testcases and won race ${code}`)
 				let players = await io.in(code).fetchSockets();
 				let winner = socket.decoded["user"];
 				let race = tracker.findRace(code);
@@ -181,7 +194,7 @@ io.use(function(socket, next) {
 async function startRace(code: string, socket: Socket) {
 	const problem = await tracker.start(code);
 
-	if(problem != null) {
+	if(problem) {
 
 		const problem_details: any = {};
 		problem_details.slug = problem.slug;
@@ -190,7 +203,7 @@ async function startRace(code: string, socket: Socket) {
 			// array of dictionaries {"lang": xxx, "langSlug": xxx, "code": xxx}
 			problem_details.code = problem.codeSnippets
 
-		io.to(code).emit("start", JSON.stringify(problem_details));
+		io.to(code).emit("start", JSON.stringify(problem_details), code);
 	} else {
 		socket.emit("error", "invalid room code");
 	}

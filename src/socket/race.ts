@@ -27,7 +27,7 @@ export class Race {
 			this.problem = await LeetcodeProblems.getAnyProblem()
 			this.problemTitle = this.problem!.title;
 		}
-		else if (difficulty === "Easy" || difficulty === "Medium" || difficulty == "Hard") {
+		else if (difficulty === "Easy" || difficulty === "Medium" || difficulty === "Hard") {
 			this.problem = await LeetcodeProblems.getProblemByDifficulty(ProblemDifficulty[difficulty]);
 			this.problemTitle = this.problem!.title;
 		}

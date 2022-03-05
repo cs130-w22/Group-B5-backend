@@ -11,10 +11,15 @@ export class Tracker {
 	// stores room key of players searching for opponent
 	searching = new Map();
 
-	search(difficulty: string) {
+	async search(difficulty: string) {
 		if(this.searching.has(difficulty)) {
 			let code = this.searching.get(difficulty);
 			this.searching.delete(difficulty);
+
+			let race: Race = new Race(code, difficulty);
+			await race.setProblem(difficulty);
+			this.activeRaces.set(code, race);
+
 			return [code, true];
 		} else {
 			let newCode = this.generateRandCode();
@@ -89,7 +94,7 @@ export class Tracker {
 
 	getRaceProblem(code: string): Problem|null {
 		const race = this.activeRaces.get(code);
-		return race.problem;
+		return race ? race.problem : null;
 	}
 
 	cancelSearch(code: string): void {

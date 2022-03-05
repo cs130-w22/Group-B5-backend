@@ -19,7 +19,7 @@ const server = http.createServer(app);
 const io = require('socket.io')(server, {
 	cors: {
 	  origin: '*',
-	}
+	},'pingInterval': 5000, 'pingTimeout': 10000
 });
 
 app.use(cors())

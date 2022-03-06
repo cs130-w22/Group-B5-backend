@@ -23,3 +23,4 @@ const Race = new Schema({
 });
 
 module.exports = Race;
+export { Race };

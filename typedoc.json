@@ -1,4 +1,4 @@
 {
-	"entryPoints": ["./src/index.ts", "./src/routes/auth.ts", "./src/routes/stats.ts", "./src/socket/race.ts", "./src/socket/route.ts", "./src/socket/tracker.ts", "./src/lib/problem.ts", "./src/lib/submission.ts", "./src/lib/LeetcodeProblems.ts", "./src/lib/leetcode.ts", "./src/utils/interfaces.ts", "./src/utils/helper.ts", "./src/utils/problems.ts"],
+	"entryPoints": ["./src/index.ts", "./src/routes/auth.ts", "./src/routes/stats.ts", "./src/socket/race.ts", "./src/socket/route.ts", "./src/socket/tracker.ts", "./src/lib/problem.ts", "./src/lib/submission.ts", "./src/lib/LeetcodeProblems.ts", "./src/lib/leetcode.ts", "./src/utils/interfaces.ts", "./src/utils/helper.ts", "./src/utils/problems.ts", "./src/db/index.ts", "./src/db/models/index.ts", "./src/db/models/user.ts", "./src/db/models/race.ts", "./src/db/models/userHistory.ts"],
 	"out": "doc"
 }

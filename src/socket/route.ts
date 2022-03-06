@@ -175,3 +175,33 @@ async function startRace(code: string, socket: Socket) {
 		socket.emit("error", "invalid room code");
 	}
 }
+
+/**
+ * Upon socket connection, io listens to following socket events:
+ *
+ * search (difficulty): Searches for a random match with the given difficulty.
+ * If an opponent is immediately found, emits "match" back to the client. Otherwise,
+ * emits "searching". In both cases, returns a socket room code.
+ *
+ * cancel (code): Cancels a search, takes a socket room code as an argument. Emits
+ * "cancelled" event back to client.
+ *
+ * create (difficulty): Creates a private lobby with the given problem difficulty
+ * level. Emits "create" event back to the client on success and returns a socket room code.
+ *
+ * join (code): Attempts to join the private lobby specified by the given room code. Upon success,
+ * emits "join" back to the client, and also emits a "join" event to the entire socket room,
+ * with the joining user's name sent as an argument.
+ *
+ * start (code): Starts the private lobby specified by the given room code.
+ *
+ * submit (code, lang_slug, solution): Takes in a solution and the language of the solution for the race
+ * specified by "code". Passes this solution to the Leetcode API and emits a "notification" event to the
+ * race with information about the result of the submission. Also emits a "submission" event to the
+ * user making the submission with more details. If the solution passes all test cases, emits a "win"
+ * event to the race, passing the winner's name as an argument.
+ *
+ * leave (code): Allows a connected socket to leave a lobby specified by "code". Emits a "leave" event to the
+ * rest of the lobby specifying which user has left.
+ */
+export { io };

@@ -22,7 +22,11 @@ class LeetcodeProblems {
             return null;
         }
 
-        const problem = LeetcodeProblems.problems[Math.floor(Math.random() * LeetcodeProblems.problems.length)];
+        const filteredProblems: Array<Problem> = LeetcodeProblems.problems.filter((p: Problem) => {
+            return (!p.locked);
+        });
+
+        const problem = filteredProblems[Math.floor(Math.random() * filteredProblems.length)];
         await problem.detail();
         return problem;
     }

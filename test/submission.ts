@@ -13,9 +13,11 @@ describe("# Submission", async function () {
     this.enableTimeouts(false);
     before(async () => {
         Dotenv.config();
+        const session: string = process.env.LEETCODE_SESSION || "error";
+        const csrfToken: string = process.env.LEETCODE_CSRF || "error";
         const credit = {
-            session: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfYXV0aF91c2VyX2lkIjoiMzcwMTA5MyIsIl9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiMmY5ZDIyNWUwYWMyYWU2OGJkMzYwZGU2NDllNmI4NzczN2FjMGJkNiIsImlkIjozNzAxMDkzLCJlbWFpbCI6Imxhd3JlbmNlZnVAdWNsYS5lZHUiLCJ1c2VybmFtZSI6ImxmdTciLCJ1c2VyX3NsdWciOiJsZnU3IiwiYXZhdGFyIjoiaHR0cHM6Ly9hc3NldHMubGVldGNvZGUuY29tL3VzZXJzL2xmdTcvYXZhdGFyXzE2MzE4MzUxMDIucG5nIiwicmVmcmVzaGVkX2F0IjoxNjQ2NDY0Mjc0LCJpcCI6IjI2MDM6ODAwMTo2OTAxOjI1ODc6ZTE4NTozNjI0OmE4Y2Y6MzJjMCIsImlkZW50aXR5IjoiNDZjYTYxNDQ1MjY2NzYzMTQzNDgxODUyNjg4MmYxMDAiLCJzZXNzaW9uX2lkIjoxODY1NDg0NywiX3Nlc3Npb25fZXhwaXJ5IjoxMjA5NjAwfQ.VkECypOZHGz4-yBdtFDU9V6rKoMzB0oB8vAlTqB_HVQ",
-            csrfToken: "cL6RT3ctYA2pxF1t9ECNcWVkEQyoQUNVbKihLai2DnIIjgKlmNJIiDbKk6KMgU5p",
+	        session: session,
+	        csrfToken: csrfToken
         };
         const endpoint = EndPoint["US"];
         const leetcode: Leetcode = await Leetcode.build2(

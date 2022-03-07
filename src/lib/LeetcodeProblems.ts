@@ -18,6 +18,10 @@ class LeetcodeProblems {
 
     static async getAnyProblem(): Promise<Problem|null> {
 
+        if (LeetcodeProblems.problems === undefined) {
+            await LeetcodeProblems.setProblems();
+        }
+
         if (LeetcodeProblems.problems.length === 0) {
             return null;
         }
@@ -33,6 +37,10 @@ class LeetcodeProblems {
 
     static async getProblemByDifficulty(difficulty: number): Promise<Problem|null> {
         
+        if (LeetcodeProblems.problems === undefined) {
+            await LeetcodeProblems.setProblems();
+        }
+
         if (LeetcodeProblems.problems.length === 0) {
             return null;
         }

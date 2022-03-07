@@ -6,7 +6,8 @@ import Problem from '../lib/problem';
 import Submission from '../lib/submission';
 import { Credit, EndPoint, GraphQLRequestOptions, HttpRequestOptions, ProblemDifficulty, ProblemStatus, SubmissionStatus, Uris } from './interfaces';
 
-
+// class copied from realVEct0r's leetcode-api
+// used by the Leetcode API to make requests to the Leetcode website
 class Helper {
 
     static credit: Credit;
@@ -60,6 +61,7 @@ class Helper {
         }
     }
 
+    // modified to accommodate additional submission statuses
     static submissionStatusMap(submission: string): SubmissionStatus {
         switch (submission) {
             case "Accepted": return SubmissionStatus["Accepted"];

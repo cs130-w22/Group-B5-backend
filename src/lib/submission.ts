@@ -2,6 +2,9 @@ import e from "cors";
 import Helper from "../utils/helper";
 import { SubmissionStatus, Uris } from "../utils/interfaces";
 
+// class copied from realVEct0r's leetcode-api
+
+// this class was heavily modified from the original to include more information and for error handling
 class Submission {
     static uris: Uris;
 
@@ -9,6 +12,9 @@ class Submission {
         Submission.uris = uris;
     }
 
+    // constructor contains different fields describing the result of the submission
+    // "id" is especially important, as each submission is uniquely identified by this value
+    // the "id" value is used to query Leetcode for these specific submission results
     constructor(
         public id: number,
         public isPending?: string,
@@ -27,22 +33,29 @@ class Submission {
         public expected_output? :string,
     ) { }
 
+    // important function that gets details for each submission. 
     async detail(): Promise<Submission> {
         const response = await Helper.HttpRequest({
             url: Submission.uris.submission.replace("$id", this.id.toString()),
         });
 
+        // submission status might be undefined if Leetcode has not finished checking the submitted code against internal test cases
         try {
             this.status = Helper.submissionStatusMap(response.match(/parseInt\('(\d+)', 10/)[1]);
         } catch (error) {
+
+            // sets the submission status to be "Submission Not Ready" to trigger timeout before querying results again
             this.status = SubmissionStatus["Submission Not Ready"];
             return this;
         }
 
+        // these 3 fields will always be present in a submission
         this.lang = response.match(/getLangDisplay:\s'([^']*)'/)[1];
         this.memory = response.match(/memory:\s'([^']*)'/)[1];
         this.runtime = response.match(/runtime:\s'([^']*)'/)[1];
         
+        // all other fields will only be present based on the result of the submission
+
 
         // only execute if status is "compile error"
         if (this.status === SubmissionStatus["Compile Error"]) {

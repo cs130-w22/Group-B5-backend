@@ -1,3 +1,5 @@
+// class mostly copied from realVEct0r's leetcode-api
+
 interface HttpRequestOptions {
     method?: string;
     url: string;
@@ -32,6 +34,7 @@ enum ProblemDifficulty {
     "Hard",
 }
 
+// modified to accommodate additional submission statuses
 enum SubmissionStatus {
     "Accepted",
     "Compile Error",

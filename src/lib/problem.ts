@@ -2,6 +2,7 @@ import Helper from "../utils/helper";
 import { ProblemDifficulty, ProblemStatus, Uris } from "../utils/interfaces";
 import Submission from "./submission";
 
+// class copied from realVEct0r's leetcode-api
 class Problem {
 
     static uris: Uris;
@@ -10,6 +11,7 @@ class Problem {
         Problem.uris = uris;
     }
 
+    // important to note that problems can be instantiated based on only their "slug"
     constructor(
         readonly slug: string,
         public id?: number,
@@ -29,6 +31,7 @@ class Problem {
         public codeSnippets?: Array<any>,
     ) { }
 
+    // important function that queries Leetcode for problem details
     async detail(): Promise<Problem> {
         const response = await Helper.GraphQLRequest({
             query: `
@@ -82,6 +85,7 @@ class Problem {
         return this;
     }
 
+    // never used by our Application
     async getSubmissions(): Promise<Array<Submission>> {
         const submissions: Array<Submission> = [];
         let offet = 0;
@@ -132,6 +136,8 @@ class Problem {
         return submissions;
     }
 
+    // important function that submits code for the problem under the language "lang"
+    // returns a submission object
     async submit(lang: string, code: string): Promise<Submission> {
         const response = await Helper.HttpRequest({
             url: Problem.uris.submit.replace("$slug", this.slug),

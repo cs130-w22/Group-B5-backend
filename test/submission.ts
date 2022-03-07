@@ -37,7 +37,7 @@ describe("# Submission", async function () {
             const problem: Problem = new Problem("two-sum");
             await problem.detail();
 
-            await new Promise(r => setTimeout(r, 10000));
+            await new Promise(r => setTimeout(r, 2500));
 
             submission = await problem.submit("python3", s);
 
@@ -76,7 +76,7 @@ describe("# Submission", async function () {
             const problem: Problem = new Problem("two-sum");
             await problem.detail();
 
-            await new Promise(r => setTimeout(r, 10000));
+            await new Promise(r => setTimeout(r, 2500));
 
             submission = await problem.submit("cpp", s);
 
@@ -115,7 +115,7 @@ describe("# Submission", async function () {
             const problem: Problem = new Problem("add-two-numbers");
             await problem.detail();
 
-            await new Promise(r => setTimeout(r, 10000));
+            await new Promise(r => setTimeout(r, 2500));
 
             submission = await problem.submit("python3", s);
 
@@ -154,7 +154,7 @@ describe("# Submission", async function () {
             const problem: Problem = new Problem("median-of-two-sorted-arrays");
             await problem.detail();
 
-            await new Promise(r => setTimeout(r, 10000));
+            await new Promise(r => setTimeout(r, 2500));
 
             submission = await problem.submit("python3", s);
 

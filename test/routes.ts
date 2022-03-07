@@ -49,6 +49,8 @@ describe('Testing Routes', () => {
                 })
                 .then((res) => {
                     expect(res).to.have.status(201);
+                    expect(res.body).to.have.property("token");
+                    expect(res.body.token).to.not.be.null;
                 })
                 .then(done, done)
         });
@@ -89,6 +91,11 @@ describe('Testing Routes', () => {
                     // possible remove chai-json
                     .then((res) => {
                         expect(res).to.have.status(200);
+                        expect(res.body).to.have.property("date");
+                        expect(res.body).to.have.property("difficulty");
+                        expect(res.body).to.have.property("numParticipants");
+                        expect(res.body).to.have.property("timeToSolve");
+                        expect(res.body).to.have.property("winner");
                     })
                     .then(done, done)
             });
@@ -112,6 +119,9 @@ describe('Testing Routes', () => {
                     // possible remove chai-json
                     .then((res) => {
                         expect(res).to.have.status(200);
+                        expect(res.body).to.have.property("numWins");
+                        expect(res.body).to.have.property("numRaces");
+                        expect(res.body).to.have.property("races");
                     })
                     .then(done, done)
             });

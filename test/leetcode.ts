@@ -27,7 +27,7 @@ describe("# Leetcode API Tests", () => {
         it("Instantiated Leetcode Object should be instance of Leetcode", () => {
             expect(leetcode).to.instanceOf(Leetcode);
         });
-        it("Instantitaed Leetcode Object should have active session", () => {
+        it("Instantiated Leetcode Object should have active session", () => {
             expect(leetcode.session).to.not.null;
         });
     });
@@ -45,6 +45,7 @@ describe("# Leetcode API Tests", () => {
         it('Retrieved Questions must not be null', function () {
             problem = problems[Math.floor(Math.random() * problems.length)];
             expect(problem.slug).to.not.null;
+            expect(problem).to.not.null;
         });
 
         it('Retrieved Questions must have a difficulty', function() {

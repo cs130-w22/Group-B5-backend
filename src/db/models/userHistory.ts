@@ -17,3 +17,4 @@ const UserHistory = new Schema({
 });
 
 module.exports = UserHistory;
+export { UserHistory };

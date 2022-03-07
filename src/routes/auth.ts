@@ -70,3 +70,21 @@ router.post('/verify', async (req, res) => {
 })
 
 module.exports = router;
+/**
+ * Provides 3 API routes for user authorization: POST /auth/signup,
+ * POST /auth/login, and POST /auth/verify. 
+ *
+ * POST /auth/signup: Takes two body parameters: username, password. If both parameters are valid,
+ * adds a new user to the user database and returns a JWT corresponding to this new user, returning
+ * status 201. Returns status code 400 for missing/incorrect parameters, and returns status 401 if
+ * the given username already exists in the database.
+ *
+ * POST /auth/login: Takes two body parameters: username, password. If both parameters are valid,
+ * checks the username/password combination with the user database. If a match is found, returns a JWT
+ * corresponding to this user and returns status 200. Otherwise, returns status 401.
+ *
+ * POST /auth/verify: Takes two body parameters, token (JWT), username. Attempts to verify a user's JWT.
+ * Upon success, returns status 200. Upon missing parameters, returns status 400. Upon failure to validate
+ * the JWT, returns status 401.
+ */
+export { router };

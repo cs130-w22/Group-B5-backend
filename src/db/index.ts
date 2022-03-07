@@ -136,6 +136,16 @@ async function deleteRace(id) {
 	return true;
 }
 
+async function deleteUserHistory(id) {
+	try {
+		await models.UserHistory.deleteOne({"_id": id});
+	}
+	catch (error) {
+		return false;
+	}
+	return true;
+}
+
 module.exports = {
 	addNewUser,
 	deleteUser,
@@ -144,7 +154,8 @@ module.exports = {
 	getStats,
 	recordRace,
 	deleteRace,
+	deleteUserHistory,
 };
 
 // TypeScript specific export statement
-export { addNewUser, deleteUser, checkPassword, getRace, getStats, recordRace, deleteRace };
+export { addNewUser, deleteUser, checkPassword, getRace, getStats, recordRace, deleteRace, deleteUserHistory };

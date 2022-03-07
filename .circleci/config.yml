@@ -13,6 +13,15 @@ jobs:
       - run: yarn install
       - run: yarn build
 
+  test:
+    docker:
+      - image: cimg/node:17.6.0
+    steps:
+      - checkout
+      - run: yarn install
+      - run: yarn build
+      - run: yarn test
+
 orbs:
   node: circleci/node@5.0
   # The heroku orb contains a set of prepackaged CircleCI configuration you can utilize to deploy applications to heroku
@@ -30,6 +39,7 @@ workflows:
   sample:
     jobs:
       - build
+      - test
       - heroku/deploy-via-git:
           force: true # this parameter instructs the push to use a force flag when pushing to the heroku remote, see: https://devcenter.heroku.com/articles/git
           requires:

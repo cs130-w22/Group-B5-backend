@@ -1,4 +1,7 @@
-Make sure you have Node.js and Typescript installed. Maybe also Yarn.
+## Dependencies
+- Node.js 
+- Typescript
+- Yarn
 
 ## Running Project
 The following commands are in the package.json for reference:
@@ -14,3 +17,6 @@ yarn build
 ```
 yarn start
 ```
+
+## Acknowledgements
+This project makes use of a modified version of [realVEct0r's leetcode-api](https://github.com/realVEct0r/leetcode-api).

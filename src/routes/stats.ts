@@ -47,3 +47,16 @@ router.get('/race/:id', async function(req, res, next) {
 });
 
 module.exports = router;
+/**
+ * Provides 2 API routes to fetch stats. 
+ * 
+ * GET /stats/user/:username: Returns the number of total wins of a user (numWins), the total number 
+ * of races this user has finished (numRaces), as well as an array containing information on each race 
+ * the user participated in (races), all in JSON format. Returns status code 200 on success, and status code 401 when
+ * missing parameters are passed in or if the given username does not correspond to an existing user.
+ *
+ * GET /stats/race/:id: Takes in a race ID and provides the following information for the given
+ * race in JSON format: title, date, difficulty, number of participants (numParticipants), time to solve (timeToSolve),
+ * and winner. Returns status 200 on success, and status 401 for missing parameters or failure to find a rice corresponding to ID.
+ */
+export { router };

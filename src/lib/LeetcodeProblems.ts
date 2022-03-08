@@ -18,17 +18,29 @@ class LeetcodeProblems {
 
     static async getAnyProblem(): Promise<Problem|null> {
 
+        if (LeetcodeProblems.problems === undefined) {
+            await LeetcodeProblems.setProblems();
+        }
+
         if (LeetcodeProblems.problems.length === 0) {
             return null;
         }
 
-        const problem = LeetcodeProblems.problems[Math.floor(Math.random() * LeetcodeProblems.problems.length)];
+        const filteredProblems: Array<Problem> = LeetcodeProblems.problems.filter((p: Problem) => {
+            return (!p.locked);
+        });
+
+        const problem = filteredProblems[Math.floor(Math.random() * filteredProblems.length)];
         await problem.detail();
         return problem;
     }
 
     static async getProblemByDifficulty(difficulty: number): Promise<Problem|null> {
         
+        if (LeetcodeProblems.problems === undefined) {
+            await LeetcodeProblems.setProblems();
+        }
+
         if (LeetcodeProblems.problems.length === 0) {
             return null;
         }

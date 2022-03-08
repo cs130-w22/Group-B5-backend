@@ -35,6 +35,16 @@ async function addNewUser(name, password) {
 	return true;
 }
 
+async function deleteUser(name) {
+	try {
+		await models.User.deleteOne({"name": name});
+	}
+	catch (error) {
+		return false;
+	}
+	return true;
+}
+
 /**
  * Takes a username and password, and tries to match these with an entry in the User
  * database. If a match is found, returns true, otherwise returns false.
@@ -134,13 +144,36 @@ async function recordRace(race: Race, players) {
 	});
 }
 
+async function deleteRace(id) {
+	try {
+		await models.Race.deleteOne({"_id": id});
+	}
+	catch (error) {
+		return false;
+	}
+	return true;
+}
+
+async function deleteUserHistory(id) {
+	try {
+		await models.UserHistory.deleteOne({"_id": id});
+	}
+	catch (error) {
+		return false;
+	}
+	return true;
+}
+
 module.exports = {
 	addNewUser,
+	deleteUser,
 	checkPassword,
 	getRace,
 	getStats,
-	recordRace
+	recordRace,
+	deleteRace,
+	deleteUserHistory,
 };
 
 // TypeScript specific export statement
-export { addNewUser, checkPassword, getRace, getStats, recordRace };
+export { addNewUser, deleteUser, checkPassword, getRace, getStats, recordRace, deleteRace, deleteUserHistory };

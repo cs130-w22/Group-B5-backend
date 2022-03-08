@@ -35,6 +35,11 @@ async function addNewUser(name, password) {
 	return true;
 }
 
+/**
+ * Attempts to delete a user with name: name from the User database.
+ * Returns true on success, false on error.
+ * Used for Testing
+ */
 async function deleteUser(name) {
 	try {
 		await models.User.deleteOne({"name": name});
@@ -144,6 +149,11 @@ async function recordRace(race: Race, players) {
 	});
 }
 
+/**
+ * Attempts to delete a race with _id: id from the Race database.
+ * Returns true on success, false on error.
+ * Used for Testing
+ */
 async function deleteRace(id) {
 	try {
 		await models.Race.deleteOne({"_id": id});
@@ -154,6 +164,11 @@ async function deleteRace(id) {
 	return true;
 }
 
+/**
+ * Attempts to delete a user history with _id: id from the UserHistory database.
+ * Returns true on success, false on error.
+ * Used for Testing
+ */
 async function deleteUserHistory(id) {
 	try {
 		await models.UserHistory.deleteOne({"_id": id});

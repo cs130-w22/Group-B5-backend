@@ -19,8 +19,10 @@ db.once('open', () => {
 	console.log('Connected to database!');
 });
 
-// insert a new username/password combination into the database
-// return true on success, false on failure (if username already exists)
+/**
+ * Attempts to insert a new username/password combination into the User database.
+ * Returns true on success, false on error.
+ */
 async function addNewUser(name, password) {
 	try {
 		const hash = await bcrypt.hash(password, 8);
@@ -43,7 +45,10 @@ async function deleteUser(name) {
 	return true;
 }
 
-// returns true if name/password exist as a user in the database, false otherwise
+/**
+ * Takes a username and password, and tries to match these with an entry in the User
+ * database. If a match is found, returns true, otherwise returns false.
+ */
 async function checkPassword(name, password) {
 	try {
 		let user = await models.User.findOne({ name: name });
@@ -59,7 +64,12 @@ async function checkPassword(name, password) {
 	return true;
 }
 
-// get user stats
+/**
+ * Gets the stats of a given user. Returns 3 sets of data. The first being
+ * the total number of wins for the user, the second being the total number of races
+ * the user has participated in, and the third being an array of data corresponding
+ * to each race the user has participated in.
+ */
 async function getStats(name: string) {
 	try {
 		const user = await models.User.findOne({ name: name });
@@ -85,6 +95,9 @@ async function getStats(name: string) {
 	}
 }
 
+/**
+* Returns data stored in the Race database corresponding to a race with the given race ID
+*/
 async function getRace(id) {
 	try {
 		const race = await models.Race.findById(id);
@@ -98,6 +111,11 @@ async function getRace(id) {
 }
 
 // update race history when a race ends
+/**
+* Updates the Race database by adding a new entry with the following data
+* from the Race object and list of players: Title, date, difficulty, number of participants,
+* time to solve, and winner.
+*/
 async function recordRace(race: Race, players) {
 	const title = race.problemTitle;
 	const date = race.startTime;
